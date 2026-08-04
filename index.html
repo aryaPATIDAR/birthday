@@ -11,7 +11,7 @@
      CONFIG — edit these values, nothing else needed
      ============================================ */
   :root {
-    --her-name: "My Love";
+    --her-name: "Anushka 💌";
   }
 
   * { margin:0; padding:0; box-sizing:border-box; }
@@ -19,19 +19,24 @@
   :root{
     --midnight: #f7d9df;
     --midnight-2: #f4c6d1;
-    --gold: #d1749a;
-    --gold-soft: #b85c82;
-    --rose: #c9436b;
+    --gold: #d1749a;          /* decorative accent only */
+    --gold-soft: #9c4a6d;      /* text-safe accent (darker, better contrast) */
+    --rose: #a83962;           /* text-safe accent 2 */
     --cream: #fff6f2;
-    --ink: #4a2233;
+    --ink: #3a1826;            /* deep, high-contrast body/heading ink */
   }
 
   body{
     background: linear-gradient(180deg, var(--midnight) 0%, var(--midnight-2) 100%);
+    background-size: 100% 200%;
+    animation: bgDrift 18s ease-in-out infinite;
     color: var(--ink);
     font-family: 'Inter', sans-serif;
     overflow-x: hidden;
-    scroll-behavior: smooth;
+  }
+  @keyframes bgDrift {
+    0%, 100% { background-position: 0% 0%; }
+    50% { background-position: 0% 100%; }
   }
 
   h1, h2, .display { font-family: 'Playfair Display', serif; }
@@ -50,7 +55,30 @@
     50% { opacity: 0.9; }
   }
 
+  /* ---------- Floating hearts / petals ambience ---------- */
+  #petals {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
+  }
+  .petal {
+    position: absolute; top: 110%; opacity: 0.55;
+    animation-name: floatUp; animation-timing-function: linear; animation-iteration-count: infinite;
+    will-change: transform;
+  }
+  @keyframes floatUp {
+    0%   { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0; }
+    10%  { opacity: 0.6; }
+    90%  { opacity: 0.5; }
+    100% { transform: translateY(-115vh) translateX(var(--drift)) rotate(360deg); opacity: 0; }
+  }
+
   section { position: relative; z-index: 1; padding: 100px 24px; max-width: 900px; margin: 0 auto; }
+
+  /* ---------- Scroll-reveal (used across sections) ---------- */
+  .reveal {
+    opacity: 0; transform: translateY(28px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
 
   /* ---------- Hero ---------- */
   #hero {
@@ -58,12 +86,16 @@
     text-align:center; max-width: 100%;
   }
   .eyebrow {
-    letter-spacing: 3px; text-transform: uppercase; font-size: 12px; color: var(--gold);
+    letter-spacing: 3px; text-transform: uppercase; font-size: 12px; color: var(--gold-soft);
     margin-bottom: 18px; opacity: 0; animation: fadeUp 1s ease forwards 0.2s;
   }
   #hero h1 {
     font-size: clamp(42px, 9vw, 84px); font-weight: 700; color: var(--ink);
-    opacity: 0; animation: fadeUp 1.2s ease forwards 0.5s;
+    opacity: 0; animation: fadeUp 1.2s ease forwards 0.5s, glow 4s ease-in-out infinite 2s;
+  }
+  @keyframes glow {
+    0%, 100% { text-shadow: 0 0 0px rgba(216,140,170,0); }
+    50% { text-shadow: 0 0 26px rgba(216,140,170,0.55); }
   }
   #hero .sub {
     font-family: 'Caveat', cursive; font-size: clamp(22px, 4vw, 30px); color: var(--rose);
@@ -72,43 +104,105 @@
   @keyframes fadeUp { from { opacity:0; transform: translateY(24px);} to {opacity:1; transform:translateY(0);} }
 
   .btn {
-    margin-top: 48px; padding: 16px 36px; border-radius: 100px; border: 1px solid var(--gold);
+    margin-top: 48px; padding: 16px 36px; border-radius: 100px; border: 1px solid var(--gold-soft);
     background: transparent; color: var(--gold-soft); font-family: 'Inter', sans-serif; font-size: 15px;
     letter-spacing: 0.5px; cursor: pointer; transition: all 0.4s ease; opacity: 0;
-    animation: fadeUp 1.2s ease forwards 1.3s;
+    animation: fadeUp 1.2s ease forwards 1.3s, pulseBtn 2.6s ease-in-out infinite 2.5s;
   }
-  .btn:hover { background: var(--gold); color: var(--ink); box-shadow: 0 0 30px rgba(232,184,109,0.4); }
+  .btn:hover { background: var(--gold-soft); color: #fff; box-shadow: 0 0 30px rgba(168,57,98,0.4); transform: translateY(-2px); }
+  @keyframes pulseBtn {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(168,57,98,0.35); }
+    50% { box-shadow: 0 0 0 10px rgba(168,57,98,0); }
+  }
+  .btn.used { }
 
   .scroll-hint {
-    position:absolute; bottom: 36px; font-size: 12px; color: var(--gold-soft); opacity: 0.5;
+    position:absolute; bottom: 36px; font-size: 12px; color: var(--gold-soft); opacity: 0.6;
     animation: bob 2s ease-in-out infinite;
   }
   @keyframes bob { 0%,100%{transform:translateY(0);} 50%{transform:translateY(8px);} }
 
   /* ---------- Section headers ---------- */
   .section-eyebrow {
-    font-size: 12px; letter-spacing: 3px; text-transform: uppercase; color: var(--gold);
+    font-size: 12px; letter-spacing: 3px; text-transform: uppercase; color: var(--gold-soft);
     text-align:center; margin-bottom: 10px;
   }
   .section-title {
     text-align:center; font-size: clamp(28px, 5vw, 44px); margin-bottom: 56px; color: var(--ink);
   }
 
-  /* ---------- Countdown ---------- */
-  #countdown-grid {
-    display:flex; gap: 20px; justify-content:center; flex-wrap: wrap;
+  /* ---------- Cinematic Countdown ---------- */
+  #countdown {
+    position: relative;
+    overflow: hidden;
   }
-  .cd-box {
-    background: rgba(232,184,109,0.06); border: 1px solid rgba(232,184,109,0.25);
-    border-radius: 16px; padding: 24px 20px; min-width: 100px; text-align:center;
-    backdrop-filter: blur(6px);
+  .cinematic-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
   }
-  .cd-num { font-family:'Playfair Display', serif; font-size: clamp(32px, 6vw, 48px); color: var(--gold-soft); }
-  .cd-label { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--rose); margin-top: 6px; }
+  .cinematic-number {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(80px, 15vw, 140px);
+    color: var(--rose);
+    opacity: 0;
+    transform: scale(0.5);
+    animation: zoomNumber 1s ease forwards;
+  }
+  @keyframes zoomNumber {
+    0% { opacity: 0; transform: scale(0.5); }
+    50% { opacity: 1; transform: scale(1.1); }
+    100% { opacity: 1; transform: scale(1); }
+  }
 
-  #birthday-banner {
-    display:none; text-align:center; font-family:'Playfair Display', serif;
-    font-size: clamp(28px, 6vw, 48px); color: var(--gold-soft);
+  /* Screen flash & shake */
+  @keyframes whiteFlash {
+    0% { background-color: transparent; }
+    50% { background-color: rgba(255, 255, 255, 0.9); }
+    100% { background-color: transparent; }
+  }
+  .flash-overlay {
+    position: fixed; inset: 0; pointer-events: none; z-index: 99;
+    animation: whiteFlash 0.6s ease;
+  }
+  @keyframes screenShake {
+    0% { transform: translate(0, 0); }
+    20% { transform: translate(-8px, 6px); }
+    40% { transform: translate(8px, -6px); }
+    60% { transform: translate(-4px, 4px); }
+    80% { transform: translate(4px, -2px); }
+    100% { transform: translate(0, 0); }
+  }
+  .shake {
+    animation: screenShake 0.4s ease;
+  }
+
+  /* Blast emoji container */
+  .blast-effect {
+    font-size: clamp(70px, 12vw, 110px);
+    animation: blastPop 0.5s ease forwards;
+  }
+  @keyframes blastPop {
+    0% { transform: scale(0.2); opacity: 0; }
+    50% { transform: scale(1.4); opacity: 1; }
+    100% { transform: scale(1); opacity: 0; display: none; }
+  }
+
+  /* Revealed photo container wrapper */
+  #countdown-photo-reveal {
+    display: none;
+    max-width: 320px;
+    margin: 0 auto;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+  #countdown-photo-reveal.show {
+    display: block;
+    opacity: 1;
+    transform: scale(1);
   }
 
   /* ---------- Gallery: cozy pinterest-style masonry ---------- */
@@ -131,8 +225,9 @@
     transform: translateY(-6px) rotate(0deg) scale(1.04) !important; box-shadow: 0 20px 40px rgba(0,0,0,0.55); z-index: 2;
     animation-play-state: paused;
   }
-  .poloroid.tapped {
-    animation: shakeIt 0.6s ease !important;
+  .poloroid-inner { }
+  .poloroid-inner.tapped {
+    animation: shakeIt 0.6s ease;
   }
   @keyframes floatIn {
     to { opacity: 1; transform: translateY(0) rotate(var(--tilt)); }
@@ -158,10 +253,11 @@
   }
   .poloroid img {
     width: 100%; display:block; border-radius: 2px; object-fit: cover;
+    aspect-ratio: 4 / 5; background: rgba(168,57,98,0.08);
   }
   .poloroid .cap {
     font-family: 'Caveat', cursive; font-size: 18px; color: var(--ink); text-align:center;
-    margin-top: 10px; opacity: 0.85; line-height: 1.2;
+    margin-top: 10px; opacity: 0.9; line-height: 1.2;
   }
   .poloroid .pin {
     position: absolute; margin-top: -22px; margin-left: calc(50% - 8px); width: 16px; height: 16px;
@@ -170,7 +266,7 @@
 
   /* ---------- Letter ---------- */
   .letter {
-    background: rgba(247,239,224,0.04); border: 1px solid rgba(232,184,109,0.2);
+    background: rgba(247,239,224,0.35); border: 1px solid rgba(168,57,98,0.25);
     border-radius: 20px; padding: 48px 40px; opacity:0; transform: translateY(30px);
     transition: opacity 1s ease, transform 1s ease;
   }
@@ -184,9 +280,14 @@
   #gift-section { text-align:center; }
   .gift-box {
     font-size: 90px; cursor: pointer; display:inline-block; user-select:none;
-    transition: transform 0.3s ease; filter: drop-shadow(0 10px 30px rgba(232,184,109,0.3));
+    transition: transform 0.3s ease; filter: drop-shadow(0 10px 30px rgba(168,57,98,0.35));
+    animation: idleBounce 2.4s ease-in-out infinite;
   }
-  .gift-box:hover { transform: scale(1.08) rotate(-3deg); }
+  @keyframes idleBounce {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-10px) rotate(-4deg); }
+  }
+  .gift-box:hover { transform: scale(1.08) rotate(-3deg); animation-play-state: paused; }
   .gift-box.opened { animation: pop 0.6s ease; }
   @keyframes pop { 0%{transform:scale(1);} 40%{transform:scale(1.3) rotate(8deg);} 100%{transform:scale(1);} }
 
@@ -194,61 +295,63 @@
     margin-top: 30px; opacity: 0; max-height: 0; overflow: hidden; transition: opacity 0.8s ease;
   }
   .gift-reveal.show { opacity: 1; max-height: 300px; }
-  .gift-reveal h2 { color: var(--gold-soft); font-size: clamp(24px, 5vw, 36px); }
-  .gift-reveal p { font-family:'Caveat', cursive; font-size: 22px; margin-top: 12px; color: var(--rose); }
+  .gift-reveal h2 { color: var(--rose); font-size: clamp(24px, 5vw, 36px); }
+  .gift-reveal p { font-family:'Caveat', cursive; font-size: 22px; margin-top: 12px; color: var(--gold-soft); }
 
   canvas#confetti { position: fixed; inset:0; pointer-events:none; z-index: 50; }
 
-  /* ---------- Music player ---------- */
-  #music-btn {
-    position: fixed; bottom: 24px; right: 24px; z-index: 40;
-    width: 56px; height: 56px; border-radius: 50%; background: var(--gold);
-    display:flex; align-items:center; justify-content:center; cursor:pointer;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.4); font-size: 22px; border: none;
-    transition: transform 0.3s;
-  }
-  #music-btn:hover { transform: scale(1.08); }
-  #music-btn.playing { animation: pulse 1.6s ease-in-out infinite; }
-  @keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(232,184,109,0.5);} 50%{box-shadow:0 0 0 14px rgba(232,184,109,0);} }
-
-  footer { text-align:center; padding: 60px 24px 40px; font-family:'Caveat', cursive; font-size:20px; color: var(--rose); opacity:0.8; }
+  footer { text-align:center; padding: 60px 24px 40px; font-family:'Caveat', cursive; font-size:20px; color: var(--rose); opacity:0.9; }
 
   @media (prefers-reduced-motion: reduce) {
     * { animation: none !important; transition: none !important; }
+  }
+
+  /* ---------- Mobile polish ---------- */
+  @media (max-width: 480px) {
+    section { padding: 70px 18px; }
+    .section-title { margin-bottom: 40px; }
+    .letter { padding: 32px 24px; }
+    .letter p { font-size: 22px; }
+    .gift-box { font-size: 70px; }
   }
 </style>
 </head>
 <body>
 
 <canvas id="stars"></canvas>
+<div id="petals"></div>
 <canvas id="confetti"></canvas>
 
 <!-- ============ HERO ============ -->
 <section id="hero">
   <div class="eyebrow">A little something for you</div>
-  <h1 id="hero-name">Happy Birthday</h1>
-  <div class="sub">— every year with you is my favourite one yet</div>
-  <button class="btn" onclick="document.getElementById('countdown').scrollIntoView({behavior:'smooth'})">Open Your Surprise 🎁</button>
+  <h1 id="hero-name">Happy Birthday Annu</h1>
+  <div class="sub">— every year of this friendship is my favourite one yet</div>
+  <button class="btn" id="surprise-btn">Open Your Surprise 🎁</button>
   <div class="scroll-hint">scroll down ↓</div>
 </section>
 
-<!-- ============ COUNTDOWN ============ -->
+<!-- ============ COUNTDOWN (Cinematic Animation) ============ -->
 <section id="countdown">
-  <div class="section-eyebrow">The Wait</div>
-  <h2 class="section-title">Counting down to your day</h2>
-  <div id="countdown-grid">
-    <div class="cd-box"><div class="cd-num" id="cd-days">00</div><div class="cd-label">Days</div></div>
-    <div class="cd-box"><div class="cd-num" id="cd-hours">00</div><div class="cd-label">Hours</div></div>
-    <div class="cd-box"><div class="cd-num" id="cd-mins">00</div><div class="cd-label">Minutes</div></div>
-    <div class="cd-box"><div class="cd-num" id="cd-secs">00</div><div class="cd-label">Seconds</div></div>
+  <div class="section-eyebrow reveal">The Moment</div>
+  <h2 class="section-title reveal">Ready for it?</h2>
+  <div class="cinematic-container reveal" id="cinematic-container">
+    <div class="cinematic-number" id="cine-num">3</div>
   </div>
-  <div id="birthday-banner">🎉 It's Your Day! Happy Birthday! 🎉</div>
+  <div id="countdown-photo-reveal">
+    <div class="poloroid" style="--tilt: -2deg;">
+      <div class="poloroid-inner">
+        <img src="https://picsum.photos/600/750" alt="Temporary Preview Photo" loading="lazy">
+        <div class="cap">The countdown begins ✨</div>
+      </div>
+    </div>
+  </div>
 </section>
 
 <!-- ============ GALLERY ============ -->
 <section id="gallery">
-  <div class="section-eyebrow">Our Story</div>
-  <h2 class="section-title">A few of my favourite moments</h2>
+  <div class="section-eyebrow reveal">Our Story</div>
+  <h2 class="section-title reveal">A few of my favourite moments</h2>
   <div class="gallery-wrap">
     <div class="masonry" id="masonry-gallery">
       <!-- polaroid cards injected by JS -->
@@ -258,60 +361,69 @@
 
 <!-- ============ LETTER ============ -->
 <section id="letter-section">
-  <div class="section-eyebrow">A Note For You</div>
-  <h2 class="section-title">Read this whenever you miss me</h2>
+  <div class="section-eyebrow reveal">A Note For You</div>
+  <h2 class="section-title reveal">From my heart 💌 </h2>
   <div class="letter" id="letter">
+    <p>
+Happy Birthday to the most beautiful headache of my life. ❤️
+</p>
     <p id="letter-text">
       Happy birthday to the person who makes ordinary days feel like something worth remembering.
       I hope this year brings you everything you quietly wish for, and I hope I get to watch it happen
       right beside you. Thank you for being exactly who you are — I wouldn't trade it for anything.
     </p>
-    <div class="sign script">— always yours</div>
+<p>
+You're my favorite gossip partner, the first person I want to share every random story with, and somehow the best adviser whenever I'm confused. No matter how much we tease each other or argue over silly things, I know I can always count on you.
+</p>
+
+<p>
+Thank you for every laugh, every late-night conversation, every silly argument, and every memory we've made together. Life is simply better with you in it.
+</p>
+
+<p>
+I hope this birthday brings you everything you've been wishing for. Keep smiling, keep annoying me, and most importantly, never change—because that's exactly what makes you so special.
+</p>
+
+<p>
+Happy Birthday. 🤍
+</p>
+    <div class="sign script">— your always</div>
   </div>
 </section>
 
 <!-- ============ GIFT REVEAL ============ -->
 <section id="gift-section">
-  <div class="section-eyebrow">One Last Thing</div>
-  <h2 class="section-title">Tap to open</h2>
+  <div class="section-eyebrow reveal">One Last Thing</div>
+  <h2 class="section-title reveal">Tap to open</h2>
   <div class="gift-box" id="gift-box" onclick="openGift()">🎁</div>
   <div class="gift-reveal" id="gift-reveal">
-    <h2 class="display">Happy Birthday!</h2>
-    <p>I love you more today than yesterday, and that's saying something. Here's to you. 🤍</p>
+    <h2 class="display">Happy Birthday Anushka!</h2>
+    <p>Best friends like you don't come around twice — so glad I got the good one. Here's to you. 🤍</p>
   </div>
 </section>
 
 <footer>made with love, just for you</footer>
-
-<button id="music-btn" onclick="toggleMusic()">🎵</button>
 
 <script>
 /* ============================================
    CONFIG — edit these and everything updates
    ============================================ */
 const CONFIG = {
-  herName: "Annuska",                              // her name — shown in hero
-  birthdayDate: "2026-08-28T00:00:00",              // her exact birthday date/time
-  letterMessage: document.getElementById('letter-text').innerHTML, // edit the <p> above directly, easier
-photos: [
-    { url: "photo1.jpg", caption: "Apna sweets " },
-    { url: "photo2.jpg", caption: "skon temple " },
-    { url: "photo3.jpg", caption: "ncc" },
-    { url: "photo4.jpg", caption: "cutypie" }
+  herName: "Annuska",                               // her name — shown in hero + banner
+  letterMessage: document.getElementById('letter-text').innerHTML,
+
+  photos: [
+    { url: "photo1.jpeg", caption: "Apna caption yahan likh" },
+    { url: "photo2.jpeg", caption: "Doosra caption" },
+    { url: "photo3.jpeg", caption: "Teesra caption" },
+    { url: "photo4.jpeg", caption: "Chautha caption" }
 ],
-  songUrl: "https://www.bensound.com/bensound-music/bensound-happybirthday.mp3" // swap with your song later
+  songUrl: ""
 };
 
 document.getElementById('hero-name').textContent = CONFIG.herName;
 
 /* ---------- Starfield ---------- */
-const starsCanvas = document.getElementById('stars');
-function drawStars(){
-  starsCanvas.innerHTML = '';
-  starsCanvas.width = window.innerWidth;
-  starsCanvas.height = document.body.scrollHeight;
-}
-// use simple div-based stars instead of canvas for performance simplicity
 (function makeStars(){
   const container = document.getElementById('stars');
   const count = 80;
@@ -328,29 +440,90 @@ function drawStars(){
   }
 })();
 
-/* ---------- Countdown ---------- */
-function updateCountdown(){
-  const target = new Date(CONFIG.birthdayDate).getTime();
-  const now = new Date().getTime();
-  const diff = target - now;
-
-  if(diff <= 0){
-    document.getElementById('countdown-grid').style.display = 'none';
-    document.getElementById('birthday-banner').style.display = 'block';
-    launchConfetti();
-    return;
+/* ---------- Floating petals/hearts ambience ---------- */
+(function makePetals(){
+  const container = document.getElementById('petals');
+  const symbols = ['🩷','✨','💫','🌸'];
+  const count = 18;
+  for(let i=0;i<count;i++){
+    const p = document.createElement('div');
+    p.className = 'petal';
+    p.textContent = symbols[Math.floor(Math.random()*symbols.length)];
+    const size = Math.random()*14 + 12;
+    p.style.fontSize = size+'px';
+    p.style.left = Math.random()*100+'%';
+    p.style.setProperty('--drift', (Math.random()*160 - 80)+'px');
+    const duration = Math.random()*10 + 14;
+    p.style.animationDuration = duration+'s';
+    p.style.animationDelay = (Math.random()*duration)+'s';
+    container.appendChild(p);
   }
-  const d = Math.floor(diff/(1000*60*60*24));
-  const h = Math.floor((diff/(1000*60*60))%24);
-  const m = Math.floor((diff/(1000*60))%60);
-  const s = Math.floor((diff/1000)%60);
-  document.getElementById('cd-days').textContent = String(d).padStart(2,'0');
-  document.getElementById('cd-hours').textContent = String(h).padStart(2,'0');
-  document.getElementById('cd-mins').textContent = String(m).padStart(2,'0');
-  document.getElementById('cd-secs').textContent = String(s).padStart(2,'0');
+})();
+
+/* ---------- Cinematic Countdown Sequence ---------- */
+let countdownTriggered = false;
+
+function runCinematicCountdown() {
+  if (countdownTriggered) return;
+  countdownTriggered = true;
+
+  const numEl = document.getElementById('cine-num');
+  const container = document.getElementById('cinematic-container');
+  const photoReveal = document.getElementById('countdown-photo-reveal');
+
+  // Step 1: Show 3
+  numEl.textContent = "3";
+  retriggerAnimation(numEl);
+
+  // Step 2: Show 2 (after 1s)
+  setTimeout(() => {
+    numEl.textContent = "2";
+    retriggerAnimation(numEl);
+  }, 1000);
+
+  // Step 3: Show 1 (after 2s)
+  setTimeout(() => {
+    numEl.textContent = "1";
+    retriggerAnimation(numEl);
+  }, 2000);
+
+  // Step 4: White Flash, Blast, Shake & Photo Reveal (after 3s)
+  setTimeout(() => {
+    // Hide number, show blast
+    numEl.style.display = 'none';
+    const blast = document.createElement('div');
+    blast.className = 'blast-effect';
+    blast.textContent = '💥';
+    container.appendChild(blast);
+
+    // White flash overlay
+    const flash = document.createElement('div');
+    flash.className = 'flash-overlay';
+    document.body.appendChild(flash);
+    setTimeout(() => flash.remove(), 600);
+
+    // Screen shake
+    document.body.classList.add('shake');
+    setTimeout(() => document.body.classList.remove('shake'), 400);
+
+    // After blast, reveal photo and launch confetti
+    setTimeout(() => {
+      container.style.display = 'none';
+      photoReveal.classList.add('show');
+      launchConfetti();
+    }, 500);
+
+  }, 3000);
 }
-updateCountdown();
-setInterval(updateCountdown, 1000);
+
+function retriggerAnimation(el) {
+  el.style.animation = 'none';
+  void el.offsetWidth;
+  el.style.animation = 'zoomNumber 1s ease forwards';
+}
+
+// Countdown is triggered only by the "Open Your Surprise" button — see below.
+
 
 /* ---------- Gallery: cozy pinterest masonry ---------- */
 const masonry = document.getElementById('masonry-gallery');
@@ -363,6 +536,9 @@ CONFIG.photos.forEach((p, i) => {
   card.style.setProperty('--sway-delay', (Math.random()*2)+'s');
   card.style.animationDelay = (i * 0.12) + 's, ' + (Math.random()*2)+'s';
 
+  const inner = document.createElement('div');
+  inner.className = 'poloroid-inner';
+
   const img = document.createElement('img');
   img.src = p.url;
   img.alt = p.caption;
@@ -372,16 +548,16 @@ CONFIG.photos.forEach((p, i) => {
   cap.className = 'cap';
   cap.textContent = p.caption;
 
-  card.appendChild(img);
-  card.appendChild(cap);
+  inner.appendChild(img);
+  inner.appendChild(cap);
+  card.appendChild(inner);
 
-  // tap/click: shake + heart burst
   card.addEventListener('click', (e) => {
-    card.classList.remove('tapped');
-    void card.offsetWidth; // restart animation
-    card.classList.add('tapped');
+    inner.classList.remove('tapped');
+    void inner.offsetWidth;
+    inner.classList.add('tapped');
 
-    const hearts = ['💕','💖','✨','🩷'];
+    const hearts = ['💌','✨','💖','🎊'];
     for(let h=0; h<4; h++){
       const heart = document.createElement('div');
       heart.className = 'heart-pop';
@@ -397,14 +573,42 @@ CONFIG.photos.forEach((p, i) => {
   masonry.appendChild(card);
 });
 
-/* ---------- Letter reveal on scroll ---------- */
+/* ---------- Scroll-reveal for sections ---------- */
 const letterEl = document.getElementById('letter');
-const observer = new IntersectionObserver((entries) => {
+const revealTargets = document.querySelectorAll('.reveal');
+const revealObserver = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if(entry.isIntersecting) entry.target.classList.add('visible');
   });
+}, { threshold: 0.25 });
+revealTargets.forEach(el => revealObserver.observe(el));
+
+const letterObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => { if(entry.isIntersecting) entry.target.classList.add('visible'); });
 }, { threshold: 0.3 });
-observer.observe(letterEl);
+letterObserver.observe(letterEl);
+
+/* ---------- Surprise button scroll ---------- */
+function animateScrollTo(targetY, duration){
+  const startY = window.pageYOffset;
+  const diff = targetY - startY;
+  const startTime = performance.now();
+  function step(now){
+    const elapsed = now - startTime;
+    const t = Math.min(elapsed / duration, 1);
+    const eased = 1 - Math.pow(1 - t, 3);
+    window.scrollTo(0, startY + diff * eased);
+    if(t < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+document.getElementById('surprise-btn').addEventListener('click', function(){
+  const target = document.getElementById('countdown');
+  const top = target.getBoundingClientRect().top + window.pageYOffset - 20;
+  animateScrollTo(top, 900);
+  runCinematicCountdown();
+});
 
 /* ---------- Gift reveal ---------- */
 function openGift(){
@@ -424,7 +628,7 @@ resizeConfetti();
 window.addEventListener('resize', resizeConfetti);
 
 function launchConfetti(){
-  const colors = ['#e8b86d', '#e8a0a0', '#f7efe0', '#c9a3d8'];
+  const colors = ['#d1749a', '#a83962', '#fff6f2', '#c9a3d8'];
   const particles = Array.from({length: 120}, () => ({
     x: Math.random()*confettiCanvas.width,
     y: -20,
@@ -454,19 +658,15 @@ function launchConfetti(){
   animate();
 }
 
-/* ---------- Opening blast: confetti fires the moment the page loads ---------- */
 window.addEventListener('load', () => {
   launchConfetti();
   setTimeout(launchConfetti, 400);
 });
 
-/* ---------- Music: built-in synthesized "Happy Birthday" tune ----------
-   No external file needed, so it always plays. Once you have your own song,
-   swap this whole block for an <audio> tag pointing at your mp3 if you prefer. */
+/* ---------- Music: built-in synthesized "Happy Birthday" tune ---------- */
 let audioCtx = null;
 let playing = false;
 let musicTimeoutId = null;
-const musicBtn = document.getElementById('music-btn');
 
 const NOTE = { G4:392.00, A4:440.00, B4:493.88, C5:523.25, D5:587.33, E5:659.25, F5:698.46, G5:783.99 };
 const MELODY = [
@@ -500,38 +700,46 @@ function scheduleMelody(){
   musicTimeoutId = setTimeout(() => { if(playing) scheduleMelody(); }, MELODY_TOTAL * 1000);
 }
 
-function setPlayingUI(isPlaying){
-  playing = isPlaying;
-  musicBtn.classList.toggle('playing', isPlaying);
-  musicBtn.textContent = isPlaying ? '⏸' : '🎵';
+let realAudioEl = null;
+if(CONFIG.songUrl){
+  realAudioEl = document.createElement('audio');
+  realAudioEl.src = CONFIG.songUrl;
+  realAudioEl.loop = true;
+  realAudioEl.volume = 0.5;
+  document.body.appendChild(realAudioEl);
 }
 
-function toggleMusic(){
-  if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  if(audioCtx.state === 'suspended') audioCtx.resume();
-
-  if(!playing){
-    setPlayingUI(true);
-    scheduleMelody();
-  } else {
-    setPlayingUI(false);
-    clearTimeout(musicTimeoutId);
-  }
-}
-
-// Start automatically on the very first tap/click/scroll anywhere on the page.
-function startMusicOnce(){
+function startMusic(){
   if(playing) return;
-  toggleMusic();
-  window.removeEventListener('click', startMusicOnce);
-  window.removeEventListener('touchstart', startMusicOnce);
-  window.removeEventListener('scroll', startMusicOnce);
-  window.removeEventListener('keydown', startMusicOnce);
+  playing = true;
+  if(realAudioEl){
+    realAudioEl.play().catch(() => { playing = false; });
+    return;
+  }
+  if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if(audioCtx.state === 'suspended') { audioCtx.resume(); }
+  scheduleMelody();
 }
-window.addEventListener('click', startMusicOnce, { once: true });
-window.addEventListener('touchstart', startMusicOnce, { once: true });
-window.addEventListener('scroll', startMusicOnce, { once: true });
-window.addEventListener('keydown', startMusicOnce, { once: true });
+
+try { startMusic(); } catch(e) {}
+
+function fallbackStart(){
+  startMusic();
+  window.removeEventListener('click', fallbackStart);
+  window.removeEventListener('touchstart', fallbackStart);
+  window.removeEventListener('pointerdown', fallbackStart);
+  window.removeEventListener('mousemove', fallbackStart);
+  window.removeEventListener('scroll', fallbackStart);
+  window.removeEventListener('keydown', fallbackStart);
+  window.removeEventListener('wheel', fallbackStart);
+}
+window.addEventListener('click', fallbackStart, { once: true });
+window.addEventListener('touchstart', fallbackStart, { once: true });
+window.addEventListener('pointerdown', fallbackStart, { once: true });
+window.addEventListener('mousemove', fallbackStart, { once: true });
+window.addEventListener('scroll', fallbackStart, { once: true });
+window.addEventListener('keydown', fallbackStart, { once: true });
+window.addEventListener('wheel', fallbackStart, { once: true });
 </script>
 
 </body>
