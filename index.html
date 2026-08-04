@@ -1,226 +1,538 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Happy Birthday ♥ — a little film</title>
-  <meta name="description" content="A cinematic birthday film in four acts: a beating heart you open with a tap, a rush of colour, a kinetic wish, and a tree that blooms into a heart of petals." />
-  <meta name="theme-color" content="#f7e7dc" />
-  <link rel="icon" type="image/png" href="/favicon.png" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Caveat:wght@500;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  /* ============================================
+     CONFIG — edit these values, nothing else needed
+     ============================================ */
+  :root {
+    --her-name: "My Love";
+  }
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,900&display=swap" rel="stylesheet" />
+  * { margin:0; padding:0; box-sizing:border-box; }
 
-  <script>document.documentElement.classList.add('js')</script>
-  <link rel="stylesheet" href="./birthday.css" />
+  :root{
+    --midnight: #f7d9df;
+    --midnight-2: #f4c6d1;
+    --gold: #d1749a;
+    --gold-soft: #b85c82;
+    --rose: #c9436b;
+    --cream: #fff6f2;
+    --ink: #4a2233;
+  }
+
+  body{
+    background: linear-gradient(180deg, var(--midnight) 0%, var(--midnight-2) 100%);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+  }
+
+  h1, h2, .display { font-family: 'Playfair Display', serif; }
+  .script { font-family: 'Caveat', cursive; }
+
+  /* ---------- Starfield ---------- */
+  #stars {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  }
+  .star {
+    position: absolute; background: var(--gold-soft); border-radius: 50%;
+    opacity: 0.6; animation: twinkle 3s ease-in-out infinite;
+  }
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.2; }
+    50% { opacity: 0.9; }
+  }
+
+  section { position: relative; z-index: 1; padding: 100px 24px; max-width: 900px; margin: 0 auto; }
+
+  /* ---------- Hero ---------- */
+  #hero {
+    min-height: 100vh; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; max-width: 100%;
+  }
+  .eyebrow {
+    letter-spacing: 3px; text-transform: uppercase; font-size: 12px; color: var(--gold);
+    margin-bottom: 18px; opacity: 0; animation: fadeUp 1s ease forwards 0.2s;
+  }
+  #hero h1 {
+    font-size: clamp(42px, 9vw, 84px); font-weight: 700; color: var(--ink);
+    opacity: 0; animation: fadeUp 1.2s ease forwards 0.5s;
+  }
+  #hero .sub {
+    font-family: 'Caveat', cursive; font-size: clamp(22px, 4vw, 30px); color: var(--rose);
+    margin-top: 12px; opacity: 0; animation: fadeUp 1.2s ease forwards 0.9s;
+  }
+  @keyframes fadeUp { from { opacity:0; transform: translateY(24px);} to {opacity:1; transform:translateY(0);} }
+
+  .btn {
+    margin-top: 48px; padding: 16px 36px; border-radius: 100px; border: 1px solid var(--gold);
+    background: transparent; color: var(--gold-soft); font-family: 'Inter', sans-serif; font-size: 15px;
+    letter-spacing: 0.5px; cursor: pointer; transition: all 0.4s ease; opacity: 0;
+    animation: fadeUp 1.2s ease forwards 1.3s;
+  }
+  .btn:hover { background: var(--gold); color: var(--ink); box-shadow: 0 0 30px rgba(232,184,109,0.4); }
+
+  .scroll-hint {
+    position:absolute; bottom: 36px; font-size: 12px; color: var(--gold-soft); opacity: 0.5;
+    animation: bob 2s ease-in-out infinite;
+  }
+  @keyframes bob { 0%,100%{transform:translateY(0);} 50%{transform:translateY(8px);} }
+
+  /* ---------- Section headers ---------- */
+  .section-eyebrow {
+    font-size: 12px; letter-spacing: 3px; text-transform: uppercase; color: var(--gold);
+    text-align:center; margin-bottom: 10px;
+  }
+  .section-title {
+    text-align:center; font-size: clamp(28px, 5vw, 44px); margin-bottom: 56px; color: var(--ink);
+  }
+
+  /* ---------- Countdown ---------- */
+  #countdown-grid {
+    display:flex; gap: 20px; justify-content:center; flex-wrap: wrap;
+  }
+  .cd-box {
+    background: rgba(232,184,109,0.06); border: 1px solid rgba(232,184,109,0.25);
+    border-radius: 16px; padding: 24px 20px; min-width: 100px; text-align:center;
+    backdrop-filter: blur(6px);
+  }
+  .cd-num { font-family:'Playfair Display', serif; font-size: clamp(32px, 6vw, 48px); color: var(--gold-soft); }
+  .cd-label { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--rose); margin-top: 6px; }
+
+  #birthday-banner {
+    display:none; text-align:center; font-family:'Playfair Display', serif;
+    font-size: clamp(28px, 6vw, 48px); color: var(--gold-soft);
+  }
+
+  /* ---------- Gallery: cozy pinterest-style masonry ---------- */
+  .gallery-wrap { max-width: 780px; margin: 0 auto; }
+  .masonry {
+    columns: 2; column-gap: 18px;
+  }
+  @media (min-width: 640px) { .masonry { columns: 3; } }
+
+  .poloroid {
+    break-inside: avoid; margin-bottom: 18px; background: var(--cream);
+    padding: 10px 10px 16px; border-radius: 4px; box-shadow: 0 12px 28px rgba(0,0,0,0.4);
+    transition: transform 0.35s ease, box-shadow 0.35s ease;
+    opacity: 0; transform: translateY(24px) rotate(var(--tilt));
+    animation: floatIn 0.8s ease forwards, sway 5s ease-in-out infinite;
+    animation-delay: 0s, var(--sway-delay);
+    cursor: pointer; position: relative;
+  }
+  .poloroid:hover {
+    transform: translateY(-6px) rotate(0deg) scale(1.04) !important; box-shadow: 0 20px 40px rgba(0,0,0,0.55); z-index: 2;
+    animation-play-state: paused;
+  }
+  .poloroid.tapped {
+    animation: shakeIt 0.6s ease !important;
+  }
+  @keyframes floatIn {
+    to { opacity: 1; transform: translateY(0) rotate(var(--tilt)); }
+  }
+  @keyframes sway {
+    0%, 100% { transform: translateY(0) rotate(var(--tilt)); }
+    50% { transform: translateY(-6px) rotate(calc(var(--tilt) * -1)); }
+  }
+  @keyframes shakeIt {
+    0%, 100% { transform: translateY(0) rotate(var(--tilt)); }
+    20% { transform: rotate(-8deg) scale(1.05); }
+    40% { transform: rotate(8deg) scale(1.05); }
+    60% { transform: rotate(-6deg) scale(1.05); }
+    80% { transform: rotate(6deg) scale(1.02); }
+  }
+  .heart-pop {
+    position: absolute; font-size: 20px; pointer-events: none;
+    animation: heartFly 1s ease forwards;
+  }
+  @keyframes heartFly {
+    0% { opacity: 1; transform: translateY(0) scale(0.6); }
+    100% { opacity: 0; transform: translateY(-60px) scale(1.3); }
+  }
+  .poloroid img {
+    width: 100%; display:block; border-radius: 2px; object-fit: cover;
+  }
+  .poloroid .cap {
+    font-family: 'Caveat', cursive; font-size: 18px; color: var(--ink); text-align:center;
+    margin-top: 10px; opacity: 0.85; line-height: 1.2;
+  }
+  .poloroid .pin {
+    position: absolute; margin-top: -22px; margin-left: calc(50% - 8px); width: 16px; height: 16px;
+    border-radius: 50%; background: var(--rose); box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+  }
+
+  /* ---------- Letter ---------- */
+  .letter {
+    background: rgba(247,239,224,0.04); border: 1px solid rgba(232,184,109,0.2);
+    border-radius: 20px; padding: 48px 40px; opacity:0; transform: translateY(30px);
+    transition: opacity 1s ease, transform 1s ease;
+  }
+  .letter.visible { opacity:1; transform: translateY(0); }
+  .letter p {
+    font-family:'Caveat', cursive; font-size: 26px; line-height: 1.6; color: var(--ink);
+  }
+  .letter .sign { text-align:right; margin-top: 20px; color: var(--rose); }
+
+  /* ---------- Gift reveal ---------- */
+  #gift-section { text-align:center; }
+  .gift-box {
+    font-size: 90px; cursor: pointer; display:inline-block; user-select:none;
+    transition: transform 0.3s ease; filter: drop-shadow(0 10px 30px rgba(232,184,109,0.3));
+  }
+  .gift-box:hover { transform: scale(1.08) rotate(-3deg); }
+  .gift-box.opened { animation: pop 0.6s ease; }
+  @keyframes pop { 0%{transform:scale(1);} 40%{transform:scale(1.3) rotate(8deg);} 100%{transform:scale(1);} }
+
+  .gift-reveal {
+    margin-top: 30px; opacity: 0; max-height: 0; overflow: hidden; transition: opacity 0.8s ease;
+  }
+  .gift-reveal.show { opacity: 1; max-height: 300px; }
+  .gift-reveal h2 { color: var(--gold-soft); font-size: clamp(24px, 5vw, 36px); }
+  .gift-reveal p { font-family:'Caveat', cursive; font-size: 22px; margin-top: 12px; color: var(--rose); }
+
+  canvas#confetti { position: fixed; inset:0; pointer-events:none; z-index: 50; }
+
+  /* ---------- Music player ---------- */
+  #music-btn {
+    position: fixed; bottom: 24px; right: 24px; z-index: 40;
+    width: 56px; height: 56px; border-radius: 50%; background: var(--gold);
+    display:flex; align-items:center; justify-content:center; cursor:pointer;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4); font-size: 22px; border: none;
+    transition: transform 0.3s;
+  }
+  #music-btn:hover { transform: scale(1.08); }
+  #music-btn.playing { animation: pulse 1.6s ease-in-out infinite; }
+  @keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(232,184,109,0.5);} 50%{box-shadow:0 0 0 14px rgba(232,184,109,0);} }
+
+  footer { text-align:center; padding: 60px 24px 40px; font-family:'Caveat', cursive; font-size:20px; color: var(--rose); opacity:0.8; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+</style>
 </head>
 <body>
-  <main class="scene">
 
-    <!-- The tree world (Act 4). One canvas; it stays transparent until the
-         intro hands off, then it draws its own warm sky + blossom tree. -->
-    <canvas id="tree" class="tree" aria-label="A blossom tree grows and blooms into a heart made of petals" role="img"></canvas>
+<canvas id="stars"></canvas>
+<canvas id="confetti"></canvas>
 
-    <!-- ACT 1 — THE INVITATION ------------------------------------------------
-         A single beating heart on a warm field. It is the only thing the
-         visitor has to do: tap it. Real <button> so it is tappable + keyboard
-         focusable; everything decorative around it is aria-hidden. -->
-    <section class="hero" id="hero" aria-label="Draw the bow to open your card">
-      <div class="hero__bg" aria-hidden="true"></div>
-      <div class="hero__motes" id="motes" aria-hidden="true"></div>
+<!-- ============ HERO ============ -->
+<section id="hero">
+  <div class="eyebrow">A little something for you</div>
+  <h1 id="hero-name">Happy Birthday</h1>
+  <div class="sub">— every year with you is my favourite one yet</div>
+  <button class="btn" onclick="document.getElementById('countdown').scrollIntoView({behavior:'smooth'})">Open Your Surprise 🎁</button>
+  <div class="scroll-hint">scroll down ↓</div>
+</section>
 
-      <p class="hero__eyebrow" id="eyebrow">a little something, for you</p>
+<!-- ============ COUNTDOWN ============ -->
+<section id="countdown">
+  <div class="section-eyebrow">The Wait</div>
+  <h2 class="section-title">Counting down to your day</h2>
+  <div id="countdown-grid">
+    <div class="cd-box"><div class="cd-num" id="cd-days">00</div><div class="cd-label">Days</div></div>
+    <div class="cd-box"><div class="cd-num" id="cd-hours">00</div><div class="cd-label">Hours</div></div>
+    <div class="cd-box"><div class="cd-num" id="cd-mins">00</div><div class="cd-label">Minutes</div></div>
+    <div class="cd-box"><div class="cd-num" id="cd-secs">00</div><div class="cd-label">Seconds</div></div>
+  </div>
+  <div id="birthday-banner">🎉 It's Your Day! Happy Birthday! 🎉</div>
+</section>
 
-      <!-- THE TARGET — the heart the arrow flies to (GSAP animates .target) -->
-      <div class="targetWrap" aria-hidden="true">
-        <div class="target" id="target">
-          <span class="heart__glow" aria-hidden="true"></span>
-          <span class="target__heart" id="targetHeart">
-            <svg class="heart__svg" viewBox="0 0 100 92" aria-hidden="true">
-              <defs>
-                <radialGradient id="hg" cx="38%" cy="30%" r="80%">
-                  <stop offset="0%"  stop-color="#ffd9e4" />
-                  <stop offset="42%" stop-color="#ff6f97" />
-                  <stop offset="82%" stop-color="#d81e57" />
-                  <stop offset="100%" stop-color="#9d0f3e" />
-                </radialGradient>
-                <linearGradient id="hsheen" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%"  stop-color="rgba(255,255,255,.85)" />
-                  <stop offset="34%" stop-color="rgba(255,255,255,0)" />
-                </linearGradient>
-              </defs>
-              <path d="M50 86.5C26 68 10.5 53.6 10.5 34.6 10.5 20.4 21 11 33.2 11c8.6 0 14.2 4.7 16.8 11.4C52.6 15.7 58.2 11 66.8 11 79 11 89.5 20.4 89.5 34.6 89.5 53.6 74 68 50 86.5Z" fill="url(#hg)" />
-              <path d="M50 86.5C26 68 10.5 53.6 10.5 34.6 10.5 20.4 21 11 33.2 11c8.6 0 14.2 4.7 16.8 11.4C52.6 15.7 58.2 11 66.8 11 79 11 89.5 20.4 89.5 34.6 89.5 53.6 74 68 50 86.5Z" fill="url(#hsheen)" opacity=".7" />
-              <ellipse cx="34" cy="30" rx="8.5" ry="5.4" fill="#fff" opacity=".72" style="mix-blend-mode:screen" />
-            </svg>
-          </span>
-        </div>
-      </div>
-
-      <!-- THE BOW + ARROW — draw the string back, release to fire. The rig is
-           placed lower-left and rotated by JS to aim at the heart, so the shot
-           travels on a diagonal. A real control: role=button + keyboard drag. -->
-      <div class="archery" id="archery" role="button" tabindex="0"
-           aria-label="Draw the bow and release to send the arrow to the heart">
-
-          <!-- aim line, inside the rig so it points straight at the heart -->
-          <div class="aim" id="aim" aria-hidden="true"></div>
-
-          <!-- realistic recurve bow: wooden limbs, leather grip, a live string -->
-          <svg class="bow" id="bow" viewBox="0 0 460 300" aria-hidden="true">
-            <defs>
-              <linearGradient id="limb" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0"   stop-color="#4a2a1a" />
-                <stop offset=".18" stop-color="#6b3f24" />
-                <stop offset=".5"  stop-color="#8a5127" />
-                <stop offset=".82" stop-color="#6b3f24" />
-                <stop offset="1"   stop-color="#4a2a1a" />
-              </linearGradient>
-              <linearGradient id="limbHi" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0" stop-color="rgba(255,214,160,.8)" />
-                <stop offset="1" stop-color="rgba(255,214,160,0)" />
-              </linearGradient>
-              <linearGradient id="grip" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0" stop-color="#2a1a10" />
-                <stop offset=".5" stop-color="#5a3822" />
-                <stop offset="1" stop-color="#2a1a10" />
-              </linearGradient>
-            </defs>
-            <!-- limb body (taper faked with two stacked strokes) -->
-            <path class="bow__limb" d="M34 96 C 118 168, 168 240, 230 252 C 292 240, 342 168, 426 96"
-                  fill="none" stroke="url(#limb)" stroke-width="13" stroke-linecap="round" />
-            <path class="bow__limbHi" d="M34 96 C 118 168, 168 240, 230 252 C 292 240, 342 168, 426 96"
-                  fill="none" stroke="url(#limbHi)" stroke-width="3" stroke-linecap="round" opacity=".7" />
-            <!-- recurve tip hooks -->
-            <path d="M34 96 C 22 82, 26 70, 40 66" fill="none" stroke="url(#limb)" stroke-width="8" stroke-linecap="round" />
-            <path d="M426 96 C 438 82, 434 70, 420 66" fill="none" stroke="url(#limb)" stroke-width="8" stroke-linecap="round" />
-            <!-- leather grip over the belly -->
-            <rect x="216" y="206" width="28" height="70" rx="9" fill="url(#grip)" />
-            <path d="M219 220h22 M219 236h22 M219 252h22" stroke="rgba(0,0,0,.35)" stroke-width="2" />
-            <!-- the string: two segments meeting at the nock (JS animates the nock).
-                 A warm taupe so the taut string actually reads against the cream. -->
-            <line class="bow__str" id="strL" x1="40" y1="70" x2="230" y2="96" stroke="#9a8068" stroke-width="2.2" stroke-linecap="round" />
-            <line class="bow__str" id="strR" x1="420" y1="70" x2="230" y2="96" stroke="#9a8068" stroke-width="2.2" stroke-linecap="round" />
-            <circle class="bow__serving" id="serving" cx="230" cy="96" r="4.5" fill="#6f5137" />
-          </svg>
-
-          <!-- the arrow: winged golden heart tip (Cupid), gold feather fletching -->
-          <svg class="arrow" id="arrow" viewBox="0 0 64 220" aria-hidden="true">
-            <defs>
-              <linearGradient id="shaft" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0" stop-color="#4a2c14" />
-                <stop offset=".5" stop-color="#8a5a2c" />
-                <stop offset="1" stop-color="#3e2410" />
-              </linearGradient>
-              <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0" stop-color="#ffe38c" />
-                <stop offset=".45" stop-color="#f4a626" />
-                <stop offset="1" stop-color="#a85f0e" />
-              </linearGradient>
-              <linearGradient id="feath" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0" stop-color="#ff7f9c" />
-                <stop offset=".5" stop-color="#e6396a" />
-                <stop offset="1" stop-color="#a8154a" />
-              </linearGradient>
-              <linearGradient id="wing" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0" stop-color="#ffffff" />
-                <stop offset="1" stop-color="#ffe0c4" />
-              </linearGradient>
-            </defs>
-
-            <!-- shaft (dark wood so it reads against the cream) -->
-            <rect x="29.4" y="30" width="5.2" height="168" rx="2.6" fill="url(#shaft)" />
-
-            <!-- angel wings flanking the heart tip -->
-            <g class="arrow__wings">
-              <path class="wingL" d="M31 30 C 10 16, 2 20, 4 34 C 12 30, 20 32, 31 40 Z" fill="url(#wing)" stroke="rgba(196,132,58,.72)" stroke-width="1.2"/>
-              <path class="wingR" d="M33 30 C 54 16, 62 20, 60 34 C 52 30, 44 32, 33 40 Z" fill="url(#wing)" stroke="rgba(196,132,58,.72)" stroke-width="1.2"/>
-            </g>
-
-            <!-- golden heart arrowhead (Cupid's love arrow) -->
-            <path class="arrow__head" d="M32 12 C 30 7, 22 6.5, 21.5 13 C 21 18, 27 22, 32 27 C 37 22, 43 18, 42.5 13 C 42 6.5, 34 7, 32 12 Z" fill="url(#gold)" stroke="#a5701a" stroke-width=".8" />
-            <ellipse cx="27" cy="13" rx="2.6" ry="1.7" fill="#fff" opacity=".8" style="mix-blend-mode:screen" />
-
-            <!-- gold feather fletching -->
-            <g class="arrow__fletch">
-              <path d="M32 150 C 16 156, 10 178, 15 200 C 24 194, 30 184, 32 176 Z" fill="url(#feath)" />
-              <path d="M32 150 C 48 156, 54 178, 49 200 C 40 194, 34 184, 32 176 Z" fill="url(#feath)" opacity=".92" />
-              <path d="M28 160l4 3 M26 170l6 3 M25 180l7 3" stroke="rgba(130,12,48,.45)" stroke-width="1" />
-              <path d="M36 160l-4 3 M38 170l-6 3 M39 180l-7 3" stroke="rgba(130,12,48,.45)" stroke-width="1" />
-            </g>
-            <!-- nock -->
-            <path d="M29 200 L32 205 L35 200" fill="none" stroke="#c9a25a" stroke-width="2" stroke-linecap="round"/>
-            <!-- invisible tip marker: JS measures it to land the head on the heart -->
-            <circle id="tip" cx="32" cy="9" r="0.6" fill="none" />
-          </svg>
-      </div>
-
-      <p class="hero__hint" id="hint">pull &amp; release</p>
-    </section>
-
-    <!-- ACT 2 — THE FLOOD -----------------------------------------------------
-         The heart bursts into this circle at its landing point, and it swallows
-         the frame in rose. Same trick as the intro dot: no cross-fade anywhere,
-         the colour just arrives. -->
-    <div class="flood" id="flood" aria-hidden="true"></div>
-
-    <!-- ACT 3 — THE WISH (kinetic type on the flood) --------------------------
-         Lives inside the flood's own colour, revealed by it. Every glyph hinges
-         up out of its mask — nothing fades. -->
-    <div class="field" id="field" aria-hidden="true">
-      <div class="blob blob--1"></div>
-      <div class="blob blob--2"></div>
-      <div class="blob blob--3"></div>
-      <div class="fgrid" id="fgrid"></div>
-      <div class="fvignette"></div>
-
-      <div class="camera" id="camera">
-        <p class="kEyebrow" id="kEyebrow">make a wish&hellip;</p>
-        <h2 class="headline" id="headline">
-          <span class="hl__line"><span class="mask"><span class="hl__word" id="wLine1">Happy</span></span></span>
-          <span class="hl__line"><span class="mask"><span class="hl__word" id="wLine2">Birthday</span></span></span>
-        </h2>
-        <svg class="uline" id="uline" viewBox="0 0 300 26" fill="none" aria-hidden="true">
-          <path class="uline__path" d="M8 16C56 7 132 4 178 6c30 1 78 5 114 12-40 3-108 4-176 3"
-                stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" />
-        </svg>
-        <p class="kSub" id="kSub">to someone worth celebrating</p>
-      </div>
-
-      <div class="bar bar--top" id="barTop"></div>
-      <div class="bar bar--bot" id="barBot"></div>
+<!-- ============ GALLERY ============ -->
+<section id="gallery">
+  <div class="section-eyebrow">Our Story</div>
+  <h2 class="section-title">A few of my favourite moments</h2>
+  <div class="gallery-wrap">
+    <div class="masonry" id="masonry-gallery">
+      <!-- polaroid cards injected by JS -->
     </div>
+  </div>
+</section>
 
-    <!-- The gold light that bridges the rose wish into the dawn of the tree. -->
-    <div class="bloom" id="bloom" aria-hidden="true"></div>
+<!-- ============ LETTER ============ -->
+<section id="letter-section">
+  <div class="section-eyebrow">A Note For You</div>
+  <h2 class="section-title">Read this whenever you miss me</h2>
+  <div class="letter" id="letter">
+    <p id="letter-text">
+      Happy birthday to the person who makes ordinary days feel like something worth remembering.
+      I hope this year brings you everything you quietly wish for, and I hope I get to watch it happen
+      right beside you. Thank you for being exactly who you are — I wouldn't trade it for anything.
+    </p>
+    <div class="sign script">— always yours</div>
+  </div>
+</section>
 
-    <!-- ACT 4 — THE HAND-LETTERED WISH (over the tree) ------------------------ -->
-    <div class="wish" id="wish" aria-hidden="true">
-      <p class="wish__eyebrow" id="wEyebrow">and&hellip; make it count</p>
-      <div class="wish__heroWrap"><h1 class="wish__hero" id="wHero">Happy Birthday</h1></div>
-      <span class="wish__rule" id="wRule"></span>
-      <p class="wish__sub" id="wSub">here&rsquo;s to a year that blooms</p>
-    </div>
+<!-- ============ GIFT REVEAL ============ -->
+<section id="gift-section">
+  <div class="section-eyebrow">One Last Thing</div>
+  <h2 class="section-title">Tap to open</h2>
+  <div class="gift-box" id="gift-box" onclick="openGift()">🎁</div>
+  <div class="gift-reveal" id="gift-reveal">
+    <h2 class="display">Happy Birthday!</h2>
+    <p>I love you more today than yesterday, and that's saying something. Here's to you. 🤍</p>
+  </div>
+</section>
 
-    <!-- Play the film again once it has settled. -->
-    <button class="replay" id="replay" type="button" hidden>
-      <svg viewBox="0 0 24 24" aria-hidden="true" width="15" height="15">
-        <path d="M12 5V2L7 6l5 4V7a5 5 0 1 1-5 5H5a7 7 0 1 0 7-7z" fill="currentColor" />
-      </svg>
-      Again
-    </button>
+<footer>made with love, just for you</footer>
 
-    <!-- One lens over the whole film: vignette + fine grain. -->
-    <div class="grade" aria-hidden="true">
-      <div class="grade__vignette"></div>
-      <div class="grade__grain"></div>
-    </div>
-  </main>
+<button id="music-btn" onclick="toggleMusic()">🎵</button>
 
-  <!-- Accessible equivalent for reduced-motion + screen readers. -->
-  <p class="sr-only">Happy Birthday. Here&rsquo;s to a wonderful year ahead.</p>
+<script>
+/* ============================================
+   CONFIG — edit these and everything updates
+   ============================================ */
+const CONFIG = {
+  herName: "My Love",                              // her name — shown in hero
+  birthdayDate: "2026-08-15T00:00:00",              // her exact birthday date/time
+  letterMessage: document.getElementById('letter-text').innerHTML, // edit the <p> above directly, easier
+  photos: [
+    { url: "https://picsum.photos/seed/us1/600/750", caption: "That day we got lost and didn't mind" },
+    { url: "https://picsum.photos/seed/us2/600/750", caption: "Your laugh, my favourite sound" },
+    { url: "https://picsum.photos/seed/us3/600/750", caption: "Best trip of the year" },
+    { url: "https://picsum.photos/seed/us4/600/750", caption: "Just us, doing nothing" }
+  ],
+  songUrl: "https://www.bensound.com/bensound-music/bensound-happybirthday.mp3" // swap with your song later
+};
 
-  <script type="module" src="./birthday.js"></script>
+document.getElementById('hero-name').textContent = CONFIG.herName;
+
+/* ---------- Starfield ---------- */
+const starsCanvas = document.getElementById('stars');
+function drawStars(){
+  starsCanvas.innerHTML = '';
+  starsCanvas.width = window.innerWidth;
+  starsCanvas.height = document.body.scrollHeight;
+}
+// use simple div-based stars instead of canvas for performance simplicity
+(function makeStars(){
+  const container = document.getElementById('stars');
+  const count = 80;
+  for(let i=0;i<count;i++){
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = Math.random()*2 + 1;
+    s.style.width = size+'px';
+    s.style.height = size+'px';
+    s.style.left = Math.random()*100+'%';
+    s.style.top = Math.random()*100+'%';
+    s.style.animationDelay = (Math.random()*3)+'s';
+    container.appendChild(s);
+  }
+})();
+
+/* ---------- Countdown ---------- */
+function updateCountdown(){
+  const target = new Date(CONFIG.birthdayDate).getTime();
+  const now = new Date().getTime();
+  const diff = target - now;
+
+  if(diff <= 0){
+    document.getElementById('countdown-grid').style.display = 'none';
+    document.getElementById('birthday-banner').style.display = 'block';
+    launchConfetti();
+    return;
+  }
+  const d = Math.floor(diff/(1000*60*60*24));
+  const h = Math.floor((diff/(1000*60*60))%24);
+  const m = Math.floor((diff/(1000*60))%60);
+  const s = Math.floor((diff/1000)%60);
+  document.getElementById('cd-days').textContent = String(d).padStart(2,'0');
+  document.getElementById('cd-hours').textContent = String(h).padStart(2,'0');
+  document.getElementById('cd-mins').textContent = String(m).padStart(2,'0');
+  document.getElementById('cd-secs').textContent = String(s).padStart(2,'0');
+}
+updateCountdown();
+setInterval(updateCountdown, 1000);
+
+/* ---------- Gallery: cozy pinterest masonry ---------- */
+const masonry = document.getElementById('masonry-gallery');
+
+CONFIG.photos.forEach((p, i) => {
+  const card = document.createElement('div');
+  card.className = 'poloroid';
+  const tilt = (Math.random() * 6 - 3).toFixed(1) + 'deg';
+  card.style.setProperty('--tilt', tilt);
+  card.style.setProperty('--sway-delay', (Math.random()*2)+'s');
+  card.style.animationDelay = (i * 0.12) + 's, ' + (Math.random()*2)+'s';
+
+  const img = document.createElement('img');
+  img.src = p.url;
+  img.alt = p.caption;
+  img.loading = 'lazy';
+
+  const cap = document.createElement('div');
+  cap.className = 'cap';
+  cap.textContent = p.caption;
+
+  card.appendChild(img);
+  card.appendChild(cap);
+
+  // tap/click: shake + heart burst
+  card.addEventListener('click', (e) => {
+    card.classList.remove('tapped');
+    void card.offsetWidth; // restart animation
+    card.classList.add('tapped');
+
+    const hearts = ['💕','💖','✨','🩷'];
+    for(let h=0; h<4; h++){
+      const heart = document.createElement('div');
+      heart.className = 'heart-pop';
+      heart.textContent = hearts[Math.floor(Math.random()*hearts.length)];
+      heart.style.left = (30 + Math.random()*40) + '%';
+      heart.style.top = (30 + Math.random()*20) + '%';
+      heart.style.animationDelay = (h*0.08) + 's';
+      card.appendChild(heart);
+      setTimeout(() => heart.remove(), 1000);
+    }
+  });
+
+  masonry.appendChild(card);
+});
+
+/* ---------- Letter reveal on scroll ---------- */
+const letterEl = document.getElementById('letter');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if(entry.isIntersecting) entry.target.classList.add('visible');
+  });
+}, { threshold: 0.3 });
+observer.observe(letterEl);
+
+/* ---------- Gift reveal ---------- */
+function openGift(){
+  const box = document.getElementById('gift-box');
+  const reveal = document.getElementById('gift-reveal');
+  box.classList.add('opened');
+  box.textContent = '💝';
+  setTimeout(() => reveal.classList.add('show'), 300);
+  launchConfetti();
+}
+
+/* ---------- Confetti ---------- */
+const confettiCanvas = document.getElementById('confetti');
+const ctx = confettiCanvas.getContext('2d');
+function resizeConfetti(){ confettiCanvas.width = window.innerWidth; confettiCanvas.height = window.innerHeight; }
+resizeConfetti();
+window.addEventListener('resize', resizeConfetti);
+
+function launchConfetti(){
+  const colors = ['#e8b86d', '#e8a0a0', '#f7efe0', '#c9a3d8'];
+  const particles = Array.from({length: 120}, () => ({
+    x: Math.random()*confettiCanvas.width,
+    y: -20,
+    r: Math.random()*6+4,
+    color: colors[Math.floor(Math.random()*colors.length)],
+    vy: Math.random()*3+2,
+    vx: Math.random()*2-1,
+    rot: Math.random()*360,
+    vrot: Math.random()*6-3
+  }));
+  let frame = 0;
+  function animate(){
+    ctx.clearRect(0,0,confettiCanvas.width, confettiCanvas.height);
+    particles.forEach(p => {
+      p.y += p.vy; p.x += p.vx; p.rot += p.vrot;
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot * Math.PI/180);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.r/2, -p.r/2, p.r, p.r);
+      ctx.restore();
+    });
+    frame++;
+    if(frame < 150) requestAnimationFrame(animate);
+    else ctx.clearRect(0,0,confettiCanvas.width, confettiCanvas.height);
+  }
+  animate();
+}
+
+/* ---------- Opening blast: confetti fires the moment the page loads ---------- */
+window.addEventListener('load', () => {
+  launchConfetti();
+  setTimeout(launchConfetti, 400);
+});
+
+/* ---------- Music: built-in synthesized "Happy Birthday" tune ----------
+   No external file needed, so it always plays. Once you have your own song,
+   swap this whole block for an <audio> tag pointing at your mp3 if you prefer. */
+let audioCtx = null;
+let playing = false;
+let musicTimeoutId = null;
+const musicBtn = document.getElementById('music-btn');
+
+const NOTE = { G4:392.00, A4:440.00, B4:493.88, C5:523.25, D5:587.33, E5:659.25, F5:698.46, G5:783.99 };
+const MELODY = [
+  [NOTE.G4,0.3],[NOTE.G4,0.15],[NOTE.A4,0.45],[NOTE.G4,0.45],[NOTE.C5,0.45],[NOTE.B4,0.9],
+  [NOTE.G4,0.3],[NOTE.G4,0.15],[NOTE.A4,0.45],[NOTE.G4,0.45],[NOTE.D5,0.45],[NOTE.C5,0.9],
+  [NOTE.G4,0.3],[NOTE.G4,0.15],[NOTE.G5,0.45],[NOTE.E5,0.45],[NOTE.C5,0.45],[NOTE.B4,0.45],[NOTE.A4,0.9],
+  [NOTE.F5,0.3],[NOTE.F5,0.15],[NOTE.E5,0.45],[NOTE.C5,0.45],[NOTE.D5,0.45],[NOTE.C5,0.9]
+];
+const MELODY_TOTAL = MELODY.reduce((s,n) => s + n[1], 0);
+
+function playNote(freq, startTime, duration){
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.type = 'sine';
+  osc.frequency.value = freq;
+  gain.gain.setValueAtTime(0, startTime);
+  gain.gain.linearRampToValueAtTime(0.18, startTime + 0.03);
+  gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+  osc.connect(gain).connect(audioCtx.destination);
+  osc.start(startTime);
+  osc.stop(startTime + duration + 0.05);
+}
+
+function scheduleMelody(){
+  const start = audioCtx.currentTime + 0.1;
+  let t = start;
+  MELODY.forEach(([freq, dur]) => {
+    playNote(freq, t, dur * 0.9);
+    t += dur;
+  });
+  musicTimeoutId = setTimeout(() => { if(playing) scheduleMelody(); }, MELODY_TOTAL * 1000);
+}
+
+function setPlayingUI(isPlaying){
+  playing = isPlaying;
+  musicBtn.classList.toggle('playing', isPlaying);
+  musicBtn.textContent = isPlaying ? '⏸' : '🎵';
+}
+
+function toggleMusic(){
+  if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if(audioCtx.state === 'suspended') audioCtx.resume();
+
+  if(!playing){
+    setPlayingUI(true);
+    scheduleMelody();
+  } else {
+    setPlayingUI(false);
+    clearTimeout(musicTimeoutId);
+  }
+}
+
+// Start automatically on the very first tap/click/scroll anywhere on the page.
+function startMusicOnce(){
+  if(playing) return;
+  toggleMusic();
+  window.removeEventListener('click', startMusicOnce);
+  window.removeEventListener('touchstart', startMusicOnce);
+  window.removeEventListener('scroll', startMusicOnce);
+  window.removeEventListener('keydown', startMusicOnce);
+}
+window.addEventListener('click', startMusicOnce, { once: true });
+window.addEventListener('touchstart', startMusicOnce, { once: true });
+window.addEventListener('scroll', startMusicOnce, { once: true });
+window.addEventListener('keydown', startMusicOnce, { once: true });
+</script>
+
 </body>
 </html>
