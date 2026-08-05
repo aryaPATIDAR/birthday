@@ -65,14 +65,21 @@
     will-change: transform;
   }
   .petal-photo {
-    position: absolute; top: 110%; opacity: 0.85;
-    width: 54px; height: 54px; border-radius: 8px; overflow: hidden;
-    border: 3px solid var(--cream); box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+    position: absolute; top: 110%; opacity: 0.75;
+    width: 58px; height: 58px;
     animation-name: floatUp; animation-timing-function: linear; animation-iteration-count: infinite;
     will-change: transform;
+    filter: brightness(1.2) saturate(1.15) drop-shadow(0 6px 10px rgba(0,0,0,0.25));
   }
   .petal-photo img {
     width: 100%; height: 100%; object-fit: cover; display: block;
+    -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/></svg>");
+    mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/></svg>");
+    -webkit-mask-size: contain; mask-size: contain;
+    -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+    -webkit-mask-position: center; mask-position: center;
+    border: 1.5px solid rgba(255,246,242,0.6);
+    border-radius: 2px;
   }
   @keyframes floatUp {
     0%   { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0; }
@@ -242,6 +249,44 @@
     100% { transform: translate(-50%, -170%) scale(0.5); opacity: 0; }
   }
 
+  /* ---------- Happy Birthday bunting banner (floats above the revealed photo) ---------- */
+  .bday-banner {
+    position: absolute;
+    top: -46px; left: 50%; transform: translateX(-50%);
+    display: flex; gap: 3px;
+    z-index: 6;
+    opacity: 0;
+    animation: bannerDrop 0.9s ease forwards 0.15s;
+  }
+  @keyframes bannerDrop {
+    0% { opacity: 0; transform: translateX(-50%) translateY(-24px); }
+    60% { opacity: 1; }
+    100% { opacity: 1; transform: translateX(-50%) translateY(0); }
+  }
+  .bday-banner .string {
+    position: absolute; top: -6px; left: -10px; right: -10px; height: 2px;
+    background: var(--gold-soft); opacity: 0.6; border-radius: 2px;
+  }
+  .bday-flag {
+    width: 24px; height: 28px;
+    background: linear-gradient(160deg, var(--rose), var(--gold-soft));
+    clip-path: polygon(0 0, 100% 0, 100% 70%, 50% 100%, 0 70%);
+    display: flex; align-items: flex-start; justify-content: center;
+    padding-top: 4px;
+    animation: flagSway 3.2s ease-in-out infinite;
+    transform-origin: top center;
+  }
+  .bday-flag:nth-child(odd) { animation-delay: 0.15s; }
+  .bday-flag:nth-child(3n) { animation-delay: 0.3s; }
+  @keyframes flagSway {
+    0%, 100% { transform: rotate(-4deg); }
+    50% { transform: rotate(4deg); }
+  }
+  .bday-flag span {
+    font-family: 'Playfair Display', serif; font-weight: 700; font-size: 12px;
+    color: var(--cream);
+  }
+
   /* ---------- Gallery: cozy pinterest-style masonry ---------- */
   .gallery-wrap { max-width: 780px; margin: 0 auto; }
   .masonry {
@@ -381,6 +426,10 @@
   <div id="countdown-photo-reveal">
     <div class="poloroid" style="--tilt: -2deg;">
       <div class="reveal-blur-bg" id="reveal-blur-bg"></div>
+      <div class="bday-banner" id="bday-banner">
+        <div class="string"></div>
+        <!-- flags injected by JS -->
+      </div>
       <div class="poloroid-inner">
         <img src="photo1.jpeg" alt="Temporary Preview Photo" loading="lazy" id="reveal-photo">
         <div class="cap">The countdown begins ✨</div>
@@ -500,10 +549,15 @@ document.getElementById('hero-name').textContent = CONFIG.herName;
     container.appendChild(p);
   }
 
-  // A handful of small floating photos, mixed in among the petals
-  const photoCount = Math.min(5, CONFIG.photos.length);
+  // A handful of small floating heart-shaped photos, mixed in among the petals
+  const floatingPhotos = [
+    { url: "photo5.jpeg" },
+    { url: "photo6.jpeg" },
+    { url: "photo7.jpeg" }
+  ];
+  const photoCount = floatingPhotos.length;
   for(let i=0;i<photoCount;i++){
-    const photo = CONFIG.photos[i % CONFIG.photos.length];
+    const photo = floatingPhotos[i];
     const pp = document.createElement('div');
     pp.className = 'petal-photo';
     const size = Math.random()*20 + 48; // 48–68px
@@ -523,6 +577,21 @@ document.getElementById('hero-name').textContent = CONFIG.herName;
 
     container.appendChild(pp);
   }
+})();
+
+/* ---------- Happy Birthday bunting banner ---------- */
+(function makeBanner(){
+  const banner = document.getElementById('bday-banner');
+  const text = "HAPPY BIRTHDAY";
+  text.split('').forEach(ch => {
+    if(ch === ' ') return;
+    const flag = document.createElement('div');
+    flag.className = 'bday-flag';
+    const letter = document.createElement('span');
+    letter.textContent = ch;
+    flag.appendChild(letter);
+    banner.appendChild(flag);
+  });
 })();
 
 /* ---------- Cinematic Countdown Sequence ---------- */
