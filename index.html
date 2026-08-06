@@ -33,10 +33,46 @@
     color: var(--ink);
     font-family: 'Inter', sans-serif;
     overflow-x: hidden;
+    position: relative;
   }
   @keyframes bgDrift {
     0%, 100% { background-position: 0% 0%; }
     50% { background-position: 0% 100%; }
+  }
+
+  /* ---------- Soft blurred pink glow background ---------- */
+  #soft-glow {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
+  }
+  .glow-blob {
+    position: absolute; border-radius: 50%;
+    filter: blur(90px);
+    opacity: 0.75;
+    animation: glowFloat ease-in-out infinite;
+  }
+  .glow-blob.b1 {
+    width: 440px; height: 440px; top: -10%; left: -8%;
+    background: radial-gradient(circle, #ff6fa5 0%, transparent 72%);
+    animation-duration: 16s;
+  }
+  .glow-blob.b2 {
+    width: 520px; height: 520px; top: 20%; right: -12%;
+    background: radial-gradient(circle, #ff4d8f 0%, transparent 72%);
+    animation-duration: 20s; animation-delay: -4s;
+  }
+  .glow-blob.b3 {
+    width: 400px; height: 400px; bottom: 5%; left: 10%;
+    background: radial-gradient(circle, #ff85b3 0%, transparent 72%);
+    animation-duration: 18s; animation-delay: -8s;
+  }
+  .glow-blob.b4 {
+    width: 340px; height: 340px; bottom: -8%; right: 15%;
+    background: radial-gradient(circle, #ff9fc4 0%, transparent 72%);
+    animation-duration: 14s; animation-delay: -2s;
+  }
+  @keyframes glowFloat {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(30px, -25px) scale(1.08); }
   }
 
   h1, h2, .display { font-family: 'Playfair Display', serif; }
@@ -223,7 +259,7 @@
     inset: -10%;
     background-size: cover;
     background-position: center;
-    filter: blur(28px) brightness(0.85) saturate(1.1);
+    filter: blur(36px) brightness(0.75) saturate(1.05);
     border-radius: 28px;
     z-index: -1;
     opacity: 0;
@@ -249,41 +285,68 @@
     100% { transform: translate(-50%, -170%) scale(0.5); opacity: 0; }
   }
 
-  /* ---------- Happy Birthday bunting banner (floats above the revealed photo) ---------- */
-  .bday-banner {
-    position: absolute;
-    top: -46px; left: 50%; transform: translateX(-50%);
-    display: flex; gap: 3px;
-    z-index: 6;
+  /* ---------- Happy Birthday bunting banner (separate decorative header, not touching the photo) ---------- */
+  .reveal-stack {
+    display: flex; flex-direction: column; align-items: center;
+    gap: 34px;
+  }
+  .bday-banner-wrap {
+    position: relative;
     opacity: 0;
     animation: bannerDrop 0.9s ease forwards 0.15s;
+    padding: 6px 14px 20px;
+  }
+  .bday-banner {
+    position: relative;
+    display: flex; align-items: flex-start; gap: 4px;
+    z-index: 6;
   }
   @keyframes bannerDrop {
-    0% { opacity: 0; transform: translateX(-50%) translateY(-24px); }
+    0% { opacity: 0; transform: translateY(-20px); }
     60% { opacity: 1; }
-    100% { opacity: 1; transform: translateX(-50%) translateY(0); }
+    100% { opacity: 1; transform: translateY(0); }
   }
   .bday-banner .string {
-    position: absolute; top: -6px; left: -10px; right: -10px; height: 2px;
-    background: var(--gold-soft); opacity: 0.6; border-radius: 2px;
+    position: absolute; top: -4px; left: -16px; right: -16px; height: 2px;
+    background: var(--gold-soft); opacity: 0.55; border-radius: 2px;
+  }
+  .bday-banner .string::before,
+  .bday-banner .string::after {
+    content: ''; position: absolute; top: -3px; width: 8px; height: 8px;
+    border-radius: 50%; background: var(--rose); opacity: 0.7;
+  }
+  .bday-banner .string::before { left: -4px; }
+  .bday-banner .string::after { right: -4px; }
+  .bday-sparkle {
+    position: absolute; font-size: 16px; opacity: 0.85;
+    animation: sparkleTwinkle 2.4s ease-in-out infinite;
+  }
+  .bday-sparkle.s1 { top: -14px; left: -6px; animation-delay: 0.2s; }
+  .bday-sparkle.s2 { top: -18px; right: -8px; animation-delay: 0.9s; }
+  .bday-sparkle.s3 { bottom: -6px; left: 12%; font-size: 12px; animation-delay: 0.5s; }
+  .bday-sparkle.s4 { bottom: -8px; right: 14%; font-size: 12px; animation-delay: 1.3s; }
+  @keyframes sparkleTwinkle {
+    0%, 100% { opacity: 0.3; transform: scale(0.85); }
+    50% { opacity: 1; transform: scale(1.15); }
   }
   .bday-flag {
-    width: 24px; height: 28px;
-    background: linear-gradient(160deg, var(--rose), var(--gold-soft));
-    clip-path: polygon(0 0, 100% 0, 100% 70%, 50% 100%, 0 70%);
+    width: 26px; height: 32px;
+    clip-path: polygon(0 0, 100% 0, 100% 65%, 50% 100%, 0 65%);
     display: flex; align-items: flex-start; justify-content: center;
-    padding-top: 4px;
+    padding-top: 5px;
     animation: flagSway 3.2s ease-in-out infinite;
     transform-origin: top center;
+    box-shadow: 0 4px 10px rgba(168,57,98,0.25);
   }
-  .bday-flag:nth-child(odd) { animation-delay: 0.15s; }
+  .bday-flag:nth-child(odd) { background: linear-gradient(160deg, var(--rose), #7a2e4d); animation-delay: 0.15s; }
+  .bday-flag:nth-child(even) { background: linear-gradient(160deg, var(--gold-soft), var(--rose)); animation-delay: 0.35s; }
   .bday-flag:nth-child(3n) { animation-delay: 0.3s; }
   @keyframes flagSway {
-    0%, 100% { transform: rotate(-4deg); }
-    50% { transform: rotate(4deg); }
+    0%, 100% { transform: rotate(-5deg); }
+    50% { transform: rotate(5deg); }
   }
   .bday-flag span {
-    font-family: 'Playfair Display', serif; font-weight: 700; font-size: 12px;
+    font-family: 'Playfair Display', serif; font-weight: 700; font-size: 13px;
     color: var(--cream);
   }
 
@@ -336,6 +399,7 @@
   .poloroid img {
     width: 100%; display:block; border-radius: 2px; object-fit: cover;
     aspect-ratio: 4 / 5; background: rgba(168,57,98,0.08);
+    filter: brightness(0.9);
   }
   .poloroid .cap {
     font-family: 'Caveat', cursive; font-size: 18px; color: var(--ink); text-align:center;
@@ -403,6 +467,12 @@
 </head>
 <body>
 
+<div id="soft-glow">
+  <div class="glow-blob b1"></div>
+  <div class="glow-blob b2"></div>
+  <div class="glow-blob b3"></div>
+  <div class="glow-blob b4"></div>
+</div>
 <canvas id="stars"></canvas>
 <div id="petals"></div>
 <canvas id="confetti"></canvas>
@@ -424,15 +494,23 @@
     <div class="cinematic-number" id="cine-num">3</div>
   </div>
   <div id="countdown-photo-reveal">
-    <div class="poloroid" style="--tilt: -2deg;">
-      <div class="reveal-blur-bg" id="reveal-blur-bg"></div>
-      <div class="bday-banner" id="bday-banner">
-        <div class="string"></div>
-        <!-- flags injected by JS -->
+    <div class="reveal-stack">
+      <div class="bday-banner-wrap">
+        <span class="bday-sparkle s1">✨</span>
+        <span class="bday-sparkle s2">🎊</span>
+        <span class="bday-sparkle s3">💫</span>
+        <span class="bday-sparkle s4">🩷</span>
+        <div class="bday-banner" id="bday-banner">
+          <div class="string"></div>
+          <!-- flags injected by JS -->
+        </div>
       </div>
-      <div class="poloroid-inner">
-        <img src="photo1.jpeg" alt="Temporary Preview Photo" loading="lazy" id="reveal-photo">
-        <div class="cap">The countdown begins ✨</div>
+      <div class="poloroid" style="--tilt: -2deg;">
+        <div class="reveal-blur-bg" id="reveal-blur-bg"></div>
+        <div class="poloroid-inner">
+          <img src="photo1.jpeg" alt="Temporary Preview Photo" loading="lazy" id="reveal-photo">
+          <div class="cap">The countdown begins ✨</div>
+        </div>
       </div>
     </div>
   </div>
@@ -497,16 +575,21 @@ Happy Birthday. 🤍
 <script>
 /* ============================================
    CONFIG — edit these and everything updates
+   TO CHANGE PHOTOS LATER: replace each url below with
+   a new "data:image/jpeg;base64,...." string (convert any
+   photo at a site like base64.guru or ask Claude to redo it),
+   or point url to a normal image link/path if hosted online.
+   Sirf 'url' field change kar, baaki sab automatic update ho jayega.
    ============================================ */
 const CONFIG = {
   herName: "Annuska",                               // her name — shown in hero + banner
   letterMessage: document.getElementById('letter-text').innerHTML,
 
   photos: [
-    { url: "photo1.jpeg", caption: "Apna caption yahan likh" },
-    { url: "photo2.jpeg", caption: "Doosra caption" },
-    { url: "photo3.jpeg", caption: "Teesra caption" },
-    { url: "photo4.jpeg", caption: "Chautha caption" }
+    { url: "photo1.jpeg", caption: "Us din ki masti ✨" },
+    { url: "photo2.jpeg", caption: "Wo pyaari si smile 💕" },
+    { url: "photo3.jpeg", caption: "Ye look toh best hai 😍" },
+    { url: "photo4.jpeg", caption: "Hum dono ki jodi 🥹" }
 ],
   songUrl: ""
 };
