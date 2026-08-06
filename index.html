@@ -41,14 +41,21 @@
   }
 
   /* ---------- Soft blurred pink glow background ---------- */
+  /* Uses position:absolute (not fixed) because iOS Safari can fail to
+     render fixed-position elements combined with filter:blur — this
+     scrolls with the page instead, which renders reliably on mobile. */
   #soft-glow {
-    position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 0; pointer-events: none; overflow: hidden;
   }
   .glow-blob {
     position: absolute; border-radius: 50%;
     filter: blur(90px);
     opacity: 0.75;
     animation: glowFloat ease-in-out infinite;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    will-change: transform;
   }
   .glow-blob.b1 {
     width: 440px; height: 440px; top: -10%; left: -8%;
