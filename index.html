@@ -210,7 +210,7 @@
     color: var(--rose);
     opacity: 0;
     transform: scale(0.5);
-    animation: zoomNumber 1s ease forwards;
+    animation: zoomNumber 0.5s ease forwards;
   }
   @keyframes zoomNumber {
     0% { opacity: 0; transform: scale(0.5); }
@@ -226,7 +226,7 @@
   }
   .flash-overlay {
     position: fixed; inset: 0; pointer-events: none; z-index: 99;
-    animation: whiteFlash 0.6s ease;
+    animation: whiteFlash 0.35s ease;
   }
   @keyframes screenShake {
     0% { transform: translate(0, 0); }
@@ -237,7 +237,7 @@
     100% { transform: translate(0, 0); }
   }
   .shake {
-    animation: screenShake 0.4s ease;
+    animation: screenShake 0.25s ease;
   }
 
   /* Revealed photo container wrapper */
@@ -248,7 +248,7 @@
     margin: 0 auto;
     opacity: 0;
     transform: scale(0.8);
-    transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     min-height: 55vh;
     display: none;
     align-items: center;
@@ -270,7 +270,7 @@
     border-radius: 28px;
     z-index: -1;
     opacity: 0;
-    transition: opacity 0.5s ease;
+    transition: opacity 0.25s ease;
   }
   #countdown-photo-reveal.show .reveal-blur-bg {
     opacity: 0.9;
@@ -284,7 +284,7 @@
     font-size: clamp(60px, 16vw, 100px);
     z-index: 5;
     pointer-events: none;
-    animation: blastFlyAway 0.8s ease forwards;
+    animation: blastFlyAway 0.45s ease forwards;
   }
   @keyframes blastFlyAway {
     0%   { transform: translate(-50%, -50%) scale(0.3); opacity: 0; }
@@ -300,7 +300,7 @@
   .bday-banner-wrap {
     position: relative;
     opacity: 0;
-    animation: bannerDrop 0.9s ease forwards 0.15s;
+    animation: bannerDrop 0.5s ease forwards 0.05s;
     padding: 6px 14px 20px;
   }
   .bday-banner {
@@ -692,8 +692,8 @@ function runCinematicCountdown() {
   if (countdownTriggered) return;
   countdownTriggered = true;
 
-  const numEl = document.getElementById('cine-num');
   const container = document.getElementById('cinematic-container');
+  const numEl = document.getElementById('cine-num');
   const photoReveal = document.getElementById('countdown-photo-reveal');
   const blurBg = document.getElementById('reveal-blur-bg');
   const revealPhoto = document.getElementById('reveal-photo');
@@ -701,28 +701,34 @@ function runCinematicCountdown() {
   // Set the blurred backdrop to the same image as the revealed photo
   blurBg.style.backgroundImage = "url('" + revealPhoto.getAttribute('src') + "')";
 
-  // Step 1: Show 3
-  numEl.textContent = "3";
+  const STEP_MS = 700;   // how long "3" and "2" stay on screen
+  const LAST_MS = 100;   // brief beat after "1" before photo pops in — feels instant
+  const sequence = ['3', '2', '1'];
+
+  // Show the first number right away, then step through the rest
+  numEl.textContent = sequence[0];
   retriggerAnimation(numEl);
 
-  // Step 2: Show 2 (after 1s)
   setTimeout(() => {
-    numEl.textContent = "2";
+    numEl.textContent = sequence[1];
     retriggerAnimation(numEl);
-  }, 1000);
 
-  // Step 3: Show 1 (after 2s)
-  setTimeout(() => {
-    numEl.textContent = "1";
-    retriggerAnimation(numEl);
-  }, 2000);
+    setTimeout(() => {
+      numEl.textContent = sequence[2];
+      retriggerAnimation(numEl);
 
-  // Step 4: Blast + immediate photo reveal (after 3s)
-  setTimeout(() => {
-    // Hide the countdown number/container immediately
+      setTimeout(() => {
+        revealPhotoNow();
+      }, LAST_MS);
+
+    }, STEP_MS);
+  }, STEP_MS);
+
+  function revealPhotoNow() {
+    // Hide the countdown number/container
     container.style.display = 'none';
 
-    // Show the photo reveal right away (blurred backdrop fades in via CSS)
+    // Show the photo reveal (blurred backdrop fades in via CSS)
     photoReveal.classList.add('show');
 
     // Blast emoji flies up and away, revealing the photo beneath it
@@ -730,28 +736,28 @@ function runCinematicCountdown() {
     blast.className = 'blast-fly';
     blast.textContent = '💥';
     photoReveal.querySelector('.poloroid').appendChild(blast);
-    setTimeout(() => blast.remove(), 800);
+    setTimeout(() => blast.remove(), 450);
 
     // White flash overlay
     const flash = document.createElement('div');
     flash.className = 'flash-overlay';
     document.body.appendChild(flash);
-    setTimeout(() => flash.remove(), 600);
+    setTimeout(() => flash.remove(), 350);
 
     // Screen shake
     document.body.classList.add('shake');
-    setTimeout(() => document.body.classList.remove('shake'), 400);
+    setTimeout(() => document.body.classList.remove('shake'), 250);
 
     // Confetti fires immediately alongside the reveal
     launchConfetti();
-
-  }, 3000);
+  }
 }
+
 
 function retriggerAnimation(el) {
   el.style.animation = 'none';
   void el.offsetWidth;
-  el.style.animation = 'zoomNumber 1s ease forwards';
+  el.style.animation = 'zoomNumber 0.4s ease forwards';
 }
 
 // Countdown is triggered only by the "Open Your Surprise" button — see below.
@@ -838,7 +844,7 @@ function animateScrollTo(targetY, duration){
 document.getElementById('surprise-btn').addEventListener('click', function(){
   const target = document.getElementById('countdown');
   const top = target.getBoundingClientRect().top + window.pageYOffset - 20;
-  animateScrollTo(top, 900);
+  animateScrollTo(top, 350);
   runCinematicCountdown();
 });
 
