@@ -169,9 +169,31 @@ button{ font-family: inherit; }
 </div>
 <div id="root"></div>
 
-<script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
-<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/react@18.3.1/umd/react.production.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.25.6/babel.min.js"></script>
+<script>
+/* Visible error fallback — if React fails to mount for any reason,
+   show the actual error on-screen instead of a silent blank page. */
+window.__lastError = null;
+window.addEventListener('error', function (e) {
+  window.__lastError = (e.error && e.error.message) || e.message || 'Unknown error';
+});
+window.addEventListener('DOMContentLoaded', function () {
+  setTimeout(function () {
+    const root = document.getElementById('root');
+    if (root && root.innerHTML.trim() === '') {
+      root.innerHTML =
+        '<div style="min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;color:#f5eeff;font-family:sans-serif;">' +
+        '<div style="font-size:40px;margin-bottom:12px;">⚠️</div>' +
+        '<div style="font-size:16px;font-weight:600;margin-bottom:8px;">Page load mein dikkat aayi</div>' +
+        '<div style="font-size:13px;color:#b6a4d9;max-width:320px;">' + (window.__lastError || 'Scripts load nahi ho paaye — internet check karke page reload karo.') + '</div>' +
+        '<button onclick="location.reload()" style="margin-top:20px;padding:10px 22px;border-radius:100px;border:1px solid rgba(255,127,201,0.5);background:rgba(255,46,166,0.15);color:#fff;font-size:14px;">Reload</button>' +
+        '</div>';
+    }
+  }, 4000);
+});
+</script>
 
 <script>
 /* Ambient starfield (plain JS, runs once, outside React) */
@@ -447,8 +469,9 @@ function PuzzleGame({ onSolved }) {
 
   const handlePointerDown = (id) => (e) => {
     e.preventDefault();
+    const point = e.touches ? e.touches[0] : e;
     setDragId(id);
-    setDragPos({ x: e.clientX, y: e.clientY });
+    setDragPos({ x: point.clientX, y: point.clientY });
   };
 
   useEffect(() => {
