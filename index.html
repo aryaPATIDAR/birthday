@@ -274,18 +274,25 @@
     opacity: 0.9;
   }
 
-  /* No-card version: transparent PNG shown directly, just a soft drop-shadow */
+  /* No-card version: transparent PNG shown directly, gently floating, no shadow */
   .reveal-photo-wrap {
     position: relative;
     text-align: center;
     transform: rotate(var(--tilt));
+  }
+  #countdown-photo-reveal.show .reveal-photo-wrap {
+    animation: photoFloat 4.5s ease-in-out infinite;
+    animation-delay: 0.5s; /* let the pop-in scale-up finish first */
+  }
+  @keyframes photoFloat {
+    0%, 100% { transform: translateY(0) rotate(var(--tilt)); }
+    50% { transform: translateY(-16px) rotate(calc(var(--tilt) * -1.4)); }
   }
   .reveal-photo-plain {
     max-width: 400px;
     width: 92%;
     display: block;
     margin: 0 auto;
-    filter: drop-shadow(0 14px 26px rgba(0,0,0,0.45));
   }
   .reveal-cap {
     margin-top: 14px;
@@ -1144,7 +1151,8 @@ function fallbackStart(){
   window.removeEventListener('pointerdown', fallbackStart);
   window.removeEventListener('mousemove', fallbackStart);
   window.removeEventListener('scroll', fallbackStart);
-  window.removeEventListener('keydown', fallbackStart);
+  window.removeEventListener('keydown', fallbackStart)
+    ;
   window.removeEventListener('wheel', fallbackStart);
 }
 window.addEventListener('click', fallbackStart, { once: true });
