@@ -274,6 +274,23 @@
     opacity: 0.9;
   }
 
+  /* No-card version: transparent PNG shown directly, just a soft drop-shadow */
+  .reveal-photo-wrap {
+    position: relative;
+    text-align: center;
+    transform: rotate(var(--tilt));
+  }
+  .reveal-photo-plain {
+    max-width: 260px;
+    width: 80%;
+    display: block;
+    margin: 0 auto;
+    filter: drop-shadow(0 14px 26px rgba(0,0,0,0.45));
+  }
+  .reveal-cap {
+    margin-top: 14px;
+  }
+
   /* Blast emoji that flies up and away, revealing the photo beneath it */
   .blast-fly {
     position: absolute;
@@ -415,88 +432,92 @@
     border-radius: 50%; background: var(--rose); box-shadow: 0 2px 4px rgba(0,0,0,0.4);
   }
 
-  /* ---------- Garland Gallery: horizontal scroll, hanging photos ---------- */
-  .garland-wrap {
+  /* ---------- Clip Gallery: single scrollable row, arced in groups of 3 ---------- */
+  .clip-wrap {
     position: relative;
     overflow-x: auto;
     overflow-y: hidden;
     -webkit-overflow-scrolling: touch;
     scroll-snap-type: x proximity;
-    padding: 46px 8vw 30px;
+    padding: 42px 8vw 20px;
     margin: 0 -24px;
-    scrollbar-width: thin;
-    scrollbar-color: var(--gold-soft) transparent;
+    scrollbar-width: none;
   }
-  .garland-wrap::-webkit-scrollbar { height: 6px; }
-  .garland-wrap::-webkit-scrollbar-thumb { background: var(--gold-soft); border-radius: 10px; opacity: 0.5; }
+  .clip-wrap::-webkit-scrollbar { display: none; height: 0; }
 
-  .garland-track {
+  .clip-track {
     position: relative;
     display: inline-flex;
     align-items: flex-start;
-    gap: 34px;
-    padding-top: 26px;
+    gap: 22px;
+    padding-top: 34px;
     min-width: 100%;
   }
-  .garland-track::before {
-    content: '';
+  .rope-svg {
     position: absolute;
-    top: 14px; left: -4vw; right: -4vw; height: 2px;
-    background: repeating-linear-gradient(90deg, var(--gold-soft) 0 10px, transparent 10px 16px);
-    opacity: 0.6;
+    top: 0; left: 0;
+    pointer-events: none;
+    overflow: visible;
+    z-index: 1;
   }
 
-  .garland-item {
+  .clip-hint {
+    text-align: center; font-size: 12px; color: var(--gold-soft); opacity: 0.65;
+    margin-top: 6px; letter-spacing: 0.5px;
+  }
+
+  .clip-item {
     position: relative;
+    z-index: 2;
     flex: 0 0 auto;
-    width: 62vw;
-    max-width: 230px;
+    width: 40vw;
+    max-width: 165px;
     scroll-snap-align: center;
     opacity: 0;
-    transform: translateY(18px) rotate(var(--tilt));
-    animation: garlandIn 0.7s ease forwards, sway 5s ease-in-out infinite;
+    transform: translateY(calc(var(--arc, 0px) + 20px)) rotate(var(--tilt));
+    animation: clipIn 0.7s ease forwards, clipSway 5s ease-in-out infinite;
     animation-delay: calc(var(--i) * 0.12s), calc(var(--i) * 0.3s);
   }
-  @keyframes garlandIn {
-    to { opacity: 1; transform: translateY(0) rotate(var(--tilt)); }
+  @keyframes clipIn {
+    to { opacity: 1; transform: translateY(var(--arc, 0px)) rotate(var(--tilt)); }
+  }
+  @keyframes clipSway {
+    0%, 100% { transform: translateY(var(--arc, 0px)) rotate(var(--tilt)); }
+    50% { transform: translateY(calc(var(--arc, 0px) - 6px)) rotate(calc(var(--tilt) * -1)); }
   }
 
-  .garland-clip {
+  .clip-pin {
     position: absolute;
-    top: -14px; left: 50%;
+    top: -16px; left: 50%;
     transform: translateX(-50%) rotate(-6deg);
-    font-size: 24px;
+    font-size: 20px;
     z-index: 3;
     filter: drop-shadow(0 3px 4px rgba(0,0,0,0.35));
     pointer-events: none;
   }
 
-  .garland-card {
+  .clip-card {
     background: var(--cream);
-    padding: 10px 10px 16px;
+    padding: 6px 6px 10px;
     border-radius: 4px;
-    box-shadow: 0 14px 30px rgba(0,0,0,0.4);
+    box-shadow: 0 10px 22px rgba(0,0,0,0.35);
     cursor: pointer;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
-  .garland-card:hover, .garland-card:active {
-    transform: scale(1.04) rotate(0deg);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+  .clip-card:hover, .clip-card:active {
+    transform: scale(1.05) rotate(0deg);
+    box-shadow: 0 16px 32px rgba(0,0,0,0.5);
+    z-index: 4;
   }
-  .garland-card.tapped { animation: shakeIt 0.6s ease; }
-  .garland-card img {
+  .clip-card.tapped { animation: shakeIt 0.6s ease; }
+  .clip-card img {
     width: 100%; display: block; border-radius: 2px; object-fit: cover;
     aspect-ratio: 4 / 5; background: rgba(168,57,98,0.08);
     filter: brightness(0.92);
   }
-  .garland-card .cap {
-    font-family: 'Caveat', cursive; font-size: 18px; color: var(--ink);
-    text-align: center; margin-top: 10px; opacity: 0.9; line-height: 1.2;
-  }
-
-  .garland-hint {
-    text-align: center; font-size: 12px; color: var(--gold-soft); opacity: 0.65;
-    margin-top: 6px; letter-spacing: 0.5px;
+  .clip-card .cap {
+    font-family: 'Caveat', cursive; font-size: 14px; color: var(--ink);
+    text-align: center; margin-top: 6px; opacity: 0.9; line-height: 1.15;
   }
 
   /* ---------- Letter ---------- */
@@ -594,12 +615,10 @@
           <!-- flags injected by JS -->
         </div>
       </div>
-      <div class="poloroid" style="--tilt: -2deg;">
+      <div class="reveal-photo-wrap" style="--tilt: -2deg;">
         <div class="reveal-blur-bg" id="reveal-blur-bg"></div>
-        <div class="poloroid-inner">
-          <img src="शीर्षकरहित डिज़ाइन (4)_nobg_preview_photiu.ai.png" alt="Temporary Preview Photo" loading="lazy" id="reveal-photo">
-          <div class="cap">The countdown begins ✨</div>
-        </div>
+        <img src="photo1.jpeg" alt="Temporary Preview Photo" loading="lazy" id="reveal-photo" class="reveal-photo-plain">
+        <div class="cap reveal-cap">The countdown begins ✨</div>
       </div>
     </div>
   </div>
@@ -609,12 +628,12 @@
 <section id="gallery">
   <div class="section-eyebrow reveal">Our Story</div>
   <h2 class="section-title reveal">A few of my favourite moments</h2>
-  <div class="garland-wrap" id="garland-wrap">
-    <div class="garland-track" id="garland-track">
-      <!-- garland photo cards injected by JS -->
+  <div class="clip-wrap" id="clip-wrap">
+    <div class="clip-track" id="clip-track">
+      <svg class="rope-svg" id="rope-svg"></svg>
+      <!-- clip photo cards injected by JS, arced in repeating groups of 3 -->
     </div>
   </div>
-  <div class="garland-hint">← swipe to see more →</div>
 </section>
 
 <!-- ============ LETTER ============ -->
@@ -665,19 +684,19 @@ Happy Birthday. 🤍
 <script>
 
 const CONFIG = {
-  herName: "Annuska",                              
+  herName: "Annuska",                               // her name — shown in hero + banner
   letterMessage: document.getElementById('letter-text').innerHTML,
 
   photos: [
     { url: "photo1.jpeg", caption: "✨" },
-    { url: "photo2.jpeg", caption: "💕" },
+    { url: "photo2.jpeg", caption: " 💕" },
     { url: "photo3.jpeg", caption: "😍" },
-    { url: "photo4.jpeg", caption: "🥹" },
-    { url: "photo6.jpeg", caption: "🥹" },
-    { url: "photo7.jpeg", caption: "🥹" },
-    { url: "photo8.jpeg", caption: "🥹" },
-    { url: "photo10.jpeg", caption: "🥹" },
-    { url: "photo9.jpeg", caption: "🥹" }
+    { url: "photo4.jpeg", caption: " 🥹" },
+    { url: "photo10.jpeg", caption: "🚗" },
+    { url: "photo6.jpeg", caption: "🤭" },
+    { url: "photo7.jpeg", caption: " 🎂" },
+    { url: "photo8.jpeg", caption: "🌙" },
+    { url: "photo9.jpeg", caption: " 🩷" }
 ],
   songUrl: ""
 };
@@ -809,7 +828,7 @@ function runCinematicCountdown() {
     const blast = document.createElement('div');
     blast.className = 'blast-fly';
     blast.textContent = '💥';
-    photoReveal.querySelector('.poloroid').appendChild(blast);
+    photoReveal.querySelector('.reveal-photo-wrap').appendChild(blast);
     setTimeout(() => blast.remove(), 450);
 
     const flash = document.createElement('div');
@@ -831,23 +850,32 @@ function retriggerAnimation(el) {
   el.style.animation = 'zoomNumber 0.4s ease forwards';
 }
 
-/* ---------- Gallery: horizontal hanging photo garland ---------- */
-const garlandTrack = document.getElementById('garland-track');
+/* ---------- Gallery: single scrollable row, arced clip photos, infinite loop ---------- */
+const clipWrap = document.getElementById('clip-wrap');
+const clipTrack = document.getElementById('clip-track');
 const clips = ['📎','🖇️','📌'];
+const N = CONFIG.photos.length;
 
-CONFIG.photos.forEach((p, i) => {
+// Render 3 copies back-to-back so we can wrap the scroll seamlessly
+const loopPhotos = [...CONFIG.photos, ...CONFIG.photos, ...CONFIG.photos];
+
+function buildClipItem(p, i){
   const item = document.createElement('div');
-  item.className = 'garland-item';
+  item.className = 'clip-item';
   const tilt = (Math.random() * 8 - 4).toFixed(1) + 'deg';
   item.style.setProperty('--tilt', tilt);
-  item.style.setProperty('--i', i);
+  item.style.setProperty('--i', i % N);
+  // repeating smile-arc pattern every 3 items: middle raised, sides dipped
+  const pos = i % 3;
+  const arc = pos === 1 ? -20 : 14;
+  item.style.setProperty('--arc', arc + 'px');
 
   const clip = document.createElement('div');
-  clip.className = 'garland-clip';
+  clip.className = 'clip-pin';
   clip.textContent = clips[i % clips.length];
 
   const card = document.createElement('div');
-  card.className = 'garland-card';
+  card.className = 'clip-card';
 
   const img = document.createElement('img');
   img.src = p.url;
@@ -881,8 +909,83 @@ CONFIG.photos.forEach((p, i) => {
     }
   });
 
-  garlandTrack.appendChild(item);
+  return item;
+}
+
+loopPhotos.forEach((p, i) => {
+  clipTrack.appendChild(buildClipItem(p, i));
 });
+
+/* ---------- Draw one continuous rope through every clip point ---------- */
+(function drawRope(){
+  const ropeSvg = document.getElementById('rope-svg');
+  const items = clipTrack.querySelectorAll('.clip-item');
+  if(!items.length) return;
+
+  const trackPaddingTop = parseFloat(getComputedStyle(clipTrack).paddingTop) || 34;
+  const PIN_TOP_OFFSET = -16; // matches .clip-pin { top: -16px } in CSS
+
+  const points = Array.from(items).map(item => {
+    const arcPx = parseFloat(getComputedStyle(item).getPropertyValue('--arc')) || 0;
+    const centerX = item.offsetLeft + item.offsetWidth / 2;
+    const pinY = trackPaddingTop + PIN_TOP_OFFSET + arcPx;
+    return { x: centerX, y: pinY };
+  });
+
+  let d = `M ${points[0].x},${points[0].y}`;
+  for (let i = 1; i < points.length - 1; i++) {
+    const midX = (points[i].x + points[i + 1].x) / 2;
+    const midY = (points[i].y + points[i + 1].y) / 2;
+    d += ` Q ${points[i].x},${points[i].y} ${midX},${midY}`;
+  }
+  if (points.length > 1) {
+    const last = points[points.length - 1];
+    d += ` L ${last.x},${last.y}`;
+  }
+
+  const trackWidth = clipTrack.scrollWidth;
+  const svgHeight = trackPaddingTop + 10;
+  ropeSvg.setAttribute('width', trackWidth);
+  ropeSvg.setAttribute('height', svgHeight);
+  ropeSvg.setAttribute('viewBox', `0 0 ${trackWidth} ${svgHeight}`);
+
+  const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  path.setAttribute('d', d);
+  path.setAttribute('fill', 'none');
+  path.setAttribute('stroke', '#9c4a6d');
+  path.setAttribute('stroke-width', '2.5');
+  path.setAttribute('stroke-linecap', 'round');
+  path.setAttribute('stroke-dasharray', '8 6');
+  path.setAttribute('opacity', '0.75');
+  ropeSvg.appendChild(path);
+})();
+
+/* ---------- Infinite loop: seamlessly wrap scroll between the 3 copies ---------- */
+(function setupInfiniteLoop(){
+  const items = clipTrack.querySelectorAll('.clip-item');
+  if(items.length < N * 2) return;
+
+  // Width of exactly one full set of photos (distance from copy 0 start to copy 1 start)
+  const setWidth = items[N].offsetLeft - items[0].offsetLeft;
+  if(!setWidth) return;
+
+  // Start scrolled into the middle copy, so the user can scroll either direction
+  clipWrap.scrollLeft = setWidth;
+
+  let ticking = false;
+  clipWrap.addEventListener('scroll', () => {
+    if(ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      if(clipWrap.scrollLeft >= setWidth * 2){
+        clipWrap.scrollLeft -= setWidth;
+      } else if(clipWrap.scrollLeft <= 0){
+        clipWrap.scrollLeft += setWidth;
+      }
+      ticking = false;
+    });
+  }, { passive: true });
+})();
 
 /* ---------- Scroll-reveal for sections ---------- */
 const letterEl = document.getElementById('letter');
